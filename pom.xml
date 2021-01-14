@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.1</version>
+        <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>moe.iacg</groupId>
@@ -47,18 +47,67 @@
 
     <properties>
         <java.version>11</java.version>
+        <nacos.version>0.2.7</nacos.version>
+        <pbbot.version>0.0.22</pbbot.version>
+        <hutool.version>5.5.7</hutool.version>
+        <jedis.version>3.4.1</jedis.version>
+
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-spring-context</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>nacos-discovery-spring-boot-starter</artifactId>
+            <version>${nacos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.boot</groupId>
+            <artifactId>nacos-config-spring-boot-starter</artifactId>
+            <version>${nacos.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.lz1998</groupId>
             <artifactId>pbbot-spring-boot-starter</artifactId>
-            <version>0.0.22</version>
+            <version>${pbbot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
+        <!--mqtt依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-integration</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

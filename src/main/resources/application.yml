@@ -5,5 +5,15 @@ spring:
       - moe.iacg.miraiboot.plugin.DemoPlugin # 测试插件
       - moe.iacg.miraiboot.plugin.HelloPlugin # 测试插件
 
+
 server:
   port: 8081
+
+nacos:
+  config:
+    server-addr: vimc.cc:8848
+#    data-id: mirai-boot-client
+#    auto-refresh: true
+#    type: properties
+
+

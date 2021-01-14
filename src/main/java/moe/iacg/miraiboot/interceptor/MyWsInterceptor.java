@@ -14,7 +14,7 @@ public class MyWsInterceptor extends BotSessionInterceptor {
     @SneakyThrows
     @Override
     public boolean checkSession(@NotNull WebSocketSession session) {
-        HttpHeaders headers = session.getHandshakeHeaders();
+        var headers = session.getHandshakeHeaders();
         String botId = headers.getFirst("x-self-id");
         System.out.println(headers);
         System.out.println("新的连接" + botId);
