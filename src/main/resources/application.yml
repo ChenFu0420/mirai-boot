@@ -11,9 +11,10 @@ server:
 
 nacos:
   config:
-    server-addr: vimc.cc:8848
-#    data-id: mirai-boot-client
-#    auto-refresh: true
-#    type: properties
-
+    bootstrap:
+      enable: true
+    server-addr: localhost:8848
+    data-id: mirai-boot-client
+    auto-refresh: true
+    type: properties
 
