@@ -1,0 +1,4 @@
+nacos:
+  config:
+    server-addr: localhost:8848
+    data-ids: mirai-boot-client,mirai-prod

@@ -1,4 +1,4 @@
-package moe.iacg.miraiboot.plugin;
+package moe.iacg.miraiboot.plugins;
 
 import lombok.extern.slf4j.Slf4j;
 import net.lz1998.pbbot.bot.Bot;

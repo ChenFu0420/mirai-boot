@@ -1,4 +1,4 @@
-package moe.iacg.miraiboot.plugin;
+package moe.iacg.miraiboot.plugins;
 
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import net.lz1998.pbbot.bot.Bot;
@@ -20,7 +20,7 @@ public class DemoPlugin extends BotPlugin {
         String useLocalCache = this.useLocalCache;
         Msg msg = Msg.builder()
                 .face(1)
-                .text("2")
+                .text(useLocalCache)
                 .text("hello2")
                 .image("https://www.baidu.com/img/flexible/logo/pc/result@2.png");
         bot.sendPrivateMsg(userId, msg, false);

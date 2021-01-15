@@ -1,0 +1,4 @@
+nacos:
+  config:
+    server-addr: vimc.cc:8848
+    data-ids: mirai-boot-client,mirai-dev

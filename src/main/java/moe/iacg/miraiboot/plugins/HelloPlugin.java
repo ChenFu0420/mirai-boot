@@ -1,4 +1,4 @@
-package moe.iacg.miraiboot.plugin;
+package moe.iacg.miraiboot.plugins;
 
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
