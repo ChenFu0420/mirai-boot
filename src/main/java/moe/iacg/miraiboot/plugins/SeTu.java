@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class SeTu extends BotPlugin {
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-
+        
         long groupId = event.getGroupId();
 
         return MESSAGE_BLOCK;
