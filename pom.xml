@@ -53,10 +53,21 @@
         <jedis.version>3.4.1</jedis.version>
         <fastjson.version>1.2.75</fastjson.version>
         <druid.version>1.1.22</druid.version>
+        <jedis.version>3.3.0</jedis.version>
 
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
