@@ -5,7 +5,9 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
+import moe.iacg.miraiboot.constants.Commands;
 import moe.iacg.miraiboot.model.SeTuResponseModel;
 import moe.iacg.miraiboot.utils.BotUtils;
 import moe.iacg.miraiboot.utils.RedisUtil;
@@ -23,25 +25,27 @@ import java.util.*;
 /**
  * @author Ghost
  */
-@Log4j2
+@Slf4j
 @Component
 public class SeTu extends BotPlugin {
 
     @Autowired
     RedisUtil redisUtil;
     private int tmpNextKeyIndex = 0;
+
     @NacosValue("${setu.api.key}")
     private String seTuAPIKeys;
 
     @Override
-    @CommandPrefix(command = "/setu")
+    @CommandPrefix(command = Commands.SETU)
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-        return onMessage(bot, event,sendSeTu(event.getRawMessage()));
+        return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
-    @CommandPrefix(command = "/setu")
+
     @Override
+    @CommandPrefix(command = Commands.SETU)
     public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
-        return onMessage(bot, event,sendSeTu(event.getRawMessage()));
+        return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
 
     private Msg sendSeTu(String message) {
@@ -73,25 +77,8 @@ public class SeTu extends BotPlugin {
         }
         SeTuResponseModel.Setu firstSeTu = seTuResponseModel.getData().stream().findFirst().get();
         builder.image(firstSeTu.getUrl());
-        builder.text("作品名称：").text(firstSeTu.getTitle()).text("\n画师：").text(firstSeTu.getAuthor());
+//        builder.text("作品名称：").text(firstSeTu.getTitle()).text("\n画师：").text(firstSeTu.getAuthor());
         return builder;
-    }
-
-    private <T> int onMessage(Bot bot, T event, Msg msg) {
-
-        if (event instanceof OnebotEvent.PrivateMessageEvent) {
-            var eventPrivate = (OnebotEvent.PrivateMessageEvent) event;
-            bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
-        }
-
-        if (event instanceof OnebotEvent.GroupMessageEvent) {
-            var eventGroup = (OnebotEvent.GroupMessageEvent) event;
-            bot.sendPrivateMsg(eventGroup.getGroupId(),
-                    msg, false);
-
-        }
-
-        return MESSAGE_BLOCK;
     }
 
 
@@ -126,19 +113,9 @@ public class SeTu extends BotPlugin {
         requestData.put("size1200", true);
         String jsonData;
         SeTuResponseModel seTuResponseModel;
-        try {
-            jsonData = HttpUtil.get("https://api.lolicon.app/setu/", requestData);
-            seTuResponseModel = JSON.parseObject(jsonData, SeTuResponseModel.class);
-        } catch (Exception e) {
-            log.error("调用色图服务出错", e);
-            return null;
-        }
-        Optional<SeTuResponseModel.Setu> first = seTuResponseModel.getData().stream().findFirst();
 
-//        if (!redisUtil.hasKey(RedisUtil.BOT_SETU_COUNT)){
-//            redisUtil.set(RedisUtil.BOT_SETU_COUNT, "1");
-//
-//        }
+        jsonData = HttpUtil.get("https://api.lolicon.app/setu/", requestData);
+        seTuResponseModel = JSON.parseObject(jsonData, SeTuResponseModel.class);
 
         redisUtil.incrBy(RedisUtil.BOT_SETU_COUNT, 1);
 
@@ -147,7 +124,6 @@ public class SeTu extends BotPlugin {
         instance.set(Calendar.MINUTE, 59);
         instance.set(Calendar.SECOND, 58);
         redisUtil.expireAt(RedisUtil.BOT_SETU_COUNT, instance.getTime());
-
 
         return seTuResponseModel;
     }
