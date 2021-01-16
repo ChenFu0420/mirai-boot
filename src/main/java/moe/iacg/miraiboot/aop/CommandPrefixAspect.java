@@ -28,9 +28,9 @@ public class CommandPrefixAspect {
      *
      * @param joinPoint 切点
      * @return 方法描述
-     * @throws Exception
      */
-    public static Map<String, Object> getMethodInfo(JoinPoint joinPoint) throws ClassNotFoundException {
+    @SneakyThrows
+    public static Map<String, Object> getMethodInfo(JoinPoint joinPoint) {
 
         Map<String, Object> map = new HashMap<>(16);
         //获取目标类名
@@ -44,7 +44,7 @@ public class CommandPrefixAspect {
         //获取该类中的方法
         Method[] methods = targetClass.getMethods();
 
-        String command = "";
+        String command;
 
         for (Method method : methods) {
             if (!method.getName().equals(methodName)) {
@@ -71,31 +71,20 @@ public class CommandPrefixAspect {
     @Around("aspectPointcut()")
     public Object doAround(ProceedingJoinPoint joinPoint) {
         var methodInfo = getMethodInfo(joinPoint);
-        var messageType = (MessageType) methodInfo.get("type");
         var command = (String) methodInfo.get("command");
-
-
         Object event = joinPoint.getArgs()[1];
 
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
             //私聊消息
-            var privateMessageEvent = (OnebotEvent.PrivateMessageEvent) event;
-            return judge(joinPoint, command, privateMessageEvent.getRawMessage());
+            return judge(joinPoint, command, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
         } else {
             //群消息处理
-            var groupMessageEvent = (OnebotEvent.GroupMessageEvent) event;
-            return judge(joinPoint, command, groupMessageEvent.getRawMessage());
+            return judge(joinPoint, command, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
         }
     }
 
-
     @SneakyThrows
     private Object judge(ProceedingJoinPoint joinPoint, String command, String rawMessage) {
-        var msg = rawMessage;
-        if (msg.startsWith(command)) {
-            return joinPoint.proceed();
-        } else {
-            return BotPlugin.MESSAGE_IGNORE;
-        }
+        return rawMessage.startsWith(command) ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
     }
 }

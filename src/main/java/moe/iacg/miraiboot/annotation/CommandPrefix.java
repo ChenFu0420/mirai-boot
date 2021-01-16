@@ -1,6 +1,5 @@
 package moe.iacg.miraiboot.annotation;
 
-import moe.iacg.miraiboot.enums.MessageType;
 
 import java.lang.annotation.*;
 
