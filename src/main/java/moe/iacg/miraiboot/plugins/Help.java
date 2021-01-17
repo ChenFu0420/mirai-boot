@@ -36,14 +36,14 @@ public class Help extends BotPlugin {
 
     private Msg help() {
 
-        Msg builder = Msg.builder();
-        List<Class<? extends BotPlugin>> onPluginList = botProperties.getPluginList();
-        for (Class<? extends BotPlugin> aClass : onPluginList) {
-            CommandPrefix commandPrefix = aClass.getAnnotation(CommandPrefix.class);
+        var builder = Msg.builder();
+        var onPluginList = botProperties.getPluginList();
+        for (var pluginClass : onPluginList) {
+            CommandPrefix commandPrefix = pluginClass.getAnnotation(CommandPrefix.class);
             if (commandPrefix == null) {
                 continue;
             }
-            Commands command = commandPrefix.command();
+            var command = commandPrefix.command();
             builder.text(commandPrefix.prefix()).text(command.getCommand()).text("：")
                     .text(command.getDescription()).text("\n");
         }
