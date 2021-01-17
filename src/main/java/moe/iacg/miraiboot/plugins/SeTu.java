@@ -1,5 +1,6 @@
 package moe.iacg.miraiboot.plugins;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
@@ -27,7 +28,7 @@ import java.util.*;
  */
 @Slf4j
 @Component
-@CommandPrefix(command = Commands.SETU)
+@CommandPrefix(command = Commands.SETU, alias = {"开车", "涩图", "色图", "营养", "开冲", "够色", "摩多", "兴奋", "黄图"})
 public class SeTu extends BotPlugin {
 
     @Autowired
@@ -50,6 +51,12 @@ public class SeTu extends BotPlugin {
     private Msg sendSeTu(String message) {
         String keyword = BotUtils.removeCommandPrefix(Commands.SETU.getCommand(), message);
         Msg builder = Msg.builder();
+
+
+        if (StrUtil.containsAny(message, this.getClass().getAnnotation(CommandPrefix.class).alias())) {
+            keyword = null;
+        }
+
         SeTuResponseModel seTuResponseModel = seTuApi(keyword, 2, 1);
 
         if (seTuResponseModel == null) {

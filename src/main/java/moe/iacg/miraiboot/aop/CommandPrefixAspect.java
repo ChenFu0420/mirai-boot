@@ -1,6 +1,7 @@
 package moe.iacg.miraiboot.aop;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,11 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -45,21 +49,21 @@ public class CommandPrefixAspect {
         var commandPrefix = AnnotationUtils.findAnnotation(joinPoint.getTarget().getClass(), CommandPrefix.class);
         var command = commandPrefix.command().getCommand();
         var prefix = commandPrefix.prefix();
+        var alias = Arrays.stream(commandPrefix.alias()).collect(Collectors.toList());
 
         Object event = joinPoint.getArgs()[1];
         String prefixCommand = prefix + command;
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
-
             //私聊消息
-            return judge(joinPoint, prefixCommand, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
+            return judge(joinPoint, prefixCommand,alias, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
         } else {
             //群消息处理
-            return judge(joinPoint, prefixCommand, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
+            return judge(joinPoint, prefixCommand,alias, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
         }
     }
 
     @SneakyThrows
-    private Object judge(ProceedingJoinPoint joinPoint, String command, String rawMessage) {
-        return rawMessage.startsWith(command) ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
+    private Object judge(ProceedingJoinPoint joinPoint, String command, List<String> alias, String rawMessage) {
+        return rawMessage.startsWith(command) || CollectionUtil.isNotEmpty(alias) && alias.contains(rawMessage) ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
     }
 }

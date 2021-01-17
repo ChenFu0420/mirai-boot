@@ -4,8 +4,10 @@ import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
+import org.springframework.stereotype.Component;
 
-public class BotUtils {
+@Component
+public class BotUtils extends BotPlugin {
     /**
      * @param command
      * @param content

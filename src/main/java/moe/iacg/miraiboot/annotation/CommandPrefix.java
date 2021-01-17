@@ -14,6 +14,8 @@ import java.lang.annotation.*;
 public @interface CommandPrefix {
     Commands command();
 
-    String prefix() default "/" ;
+    String prefix() default "/";
+
+    String[] alias() default {};
 
 }
