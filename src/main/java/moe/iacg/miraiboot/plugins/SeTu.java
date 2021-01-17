@@ -27,6 +27,7 @@ import java.util.*;
  */
 @Slf4j
 @Component
+@CommandPrefix(command = Commands.SETU)
 public class SeTu extends BotPlugin {
 
     @Autowired
@@ -37,19 +38,17 @@ public class SeTu extends BotPlugin {
     private String seTuAPIKeys;
 
     @Override
-    @CommandPrefix(command = Commands.SETU)
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
         return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
 
     @Override
-    @CommandPrefix(command = Commands.SETU)
     public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
         return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
 
     private Msg sendSeTu(String message) {
-        String keyword = BotUtils.removeCommandPrefix("setu", message);
+        String keyword = BotUtils.removeCommandPrefix(Commands.SETU.getCommand(), message);
         Msg builder = Msg.builder();
         SeTuResponseModel seTuResponseModel = seTuApi(keyword, 2, 1);
 
