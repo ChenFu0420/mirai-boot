@@ -29,7 +29,7 @@ public enum Commands {
 
     START_SERVER("startserver", "开启服务端，现在支持服务端：AcademyCraft 如：/startserver AcademyCraft"),
 
-    ANIME("anime", "以图搜番 食用方法：/anime [图片]"),
+    ANIME("anime", "以图搜番"),
 
     LIST("list", "查看在线玩家列表w"),
 

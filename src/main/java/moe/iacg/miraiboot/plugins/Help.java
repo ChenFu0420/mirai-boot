@@ -35,7 +35,6 @@ public class Help extends BotPlugin {
 
 
     private Msg help() {
-
         var builder = Msg.builder();
         var onPluginList = botProperties.getPluginList();
         for (var pluginClass : onPluginList) {
