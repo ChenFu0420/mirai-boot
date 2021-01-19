@@ -19,6 +19,7 @@ public class RedisConfig {
     @NacosValue("${redis.port}")
     private Integer port;
 
+
     @Bean
     public JedisPoolConfig poolConfig() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -37,6 +38,8 @@ public class RedisConfig {
         jedisConnectionFactory.setPort(port);
         return jedisConnectionFactory;
     }
+
+
 
     @Bean
     public StringRedisTemplate redisTemplate() {
