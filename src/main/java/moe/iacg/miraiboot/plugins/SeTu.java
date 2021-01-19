@@ -52,9 +52,11 @@ public class SeTu extends BotPlugin {
         String keyword = BotUtils.removeCommandPrefix(Commands.SETU.getCommand(), message);
         Msg builder = Msg.builder();
 
-
-        if (StrUtil.containsAny(message, this.getClass().getAnnotation(CommandPrefix.class).alias())) {
-            keyword = null;
+        for (String alias : this.getClass().getAnnotation(CommandPrefix.class).alias()) {
+            if (message.contains(alias)){
+                keyword = null;
+                break;
+            }
         }
 
         SeTuResponseModel seTuResponseModel = seTuApi(keyword, 2, 1);
