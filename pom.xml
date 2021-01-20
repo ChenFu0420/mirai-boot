@@ -48,7 +48,7 @@
     <properties>
         <java.version>11</java.version>
         <nacos.version>0.2.7</nacos.version>
-        <pbbot.version>0.0.22</pbbot.version>
+        <pbbot.version>0.0.23</pbbot.version>
         <hutool.version>5.5.7</hutool.version>
         <jedis.version>3.4.1</jedis.version>
         <fastjson.version>1.2.75</fastjson.version>

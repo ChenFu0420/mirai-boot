@@ -86,38 +86,36 @@ public class Bangumi extends BotPlugin {
         if (StringUtils.isEmpty(result.toString())) {
             return;
         }
-        List<CoolQStatus> coolQStatusList = coolQStatusMapper.getCoolQStatusList();
-        //过滤不喜欢的番剧
-        Map<Long, Set<String>> excludeBangumi = new HashMap<>();
-        //组与QQ关系
-        Map<Long, List<Long>> qqByQQGroup = new HashMap<>();
-
-        for (CoolQStatus coolQStatus : coolQStatusList) {
-            qqByQQGroup.computeIfAbsent(coolQStatus.getQqGroup(), x -> new ArrayList<>()).add(coolQStatus.getQq());
-            if (!StringUtils.isEmpty(coolQStatus.getBangumiExclude())) {
-                List<String> splitBangumiExclude = StrSpliter.split(coolQStatus.getBangumiExclude(), ",", true, true);
-                excludeBangumi.computeIfAbsent(coolQStatus.getQq(), x -> new HashSet<>()).addAll(splitBangumiExclude);
-            }
-        }
-        result.text("通知下面的小伙伴开饭啦，如果不喜欢这个番剧可以：/bangumi rm ").text(String.valueOf(bgmId)).text("\n");
-        int finalBgmId = bgmId;
-        //过滤不喜欢的番剧
-        qqByQQGroup.forEach((group, qqs) -> {
-            StringBuilder atMember = new StringBuilder();
-            qqs.forEach(qq -> {
-                if (!MapUtil.isEmpty(excludeBangumi) &&
-                        !(excludeBangumi.containsKey(qq) && excludeBangumi.get(qq)
-                                .contains(String.valueOf(finalBgmId)))) {
-                    atMember.append(new ComponentAt(qq));
-                }
-            });
-            if (StringUtils.isEmpty(atMember.toString())) {
-                return;
-            }
-            result.text(atMember);
-            getBot().sendGroupMsg(group, result,false);
-
-        });
+//        List<CoolQStatus> coolQStatusList = coolQStatusMapper.getCoolQStatusList();
+//        //过滤不喜欢的番剧
+//        Map<Long, Set<String>> excludeBangumi = new HashMap<>();
+//        //组与QQ关系
+//        Map<Long, List<Long>> qqByQQGroup = new HashMap<>();
+//
+//        for (CoolQStatus coolQStatus : coolQStatusList) {
+//            qqByQQGroup.computeIfAbsent(coolQStatus.getQqGroup(), x -> new ArrayList<>()).add(coolQStatus.getQq());
+//            if (!StringUtils.isEmpty(coolQStatus.getBangumiExclude())) {
+//                List<String> splitBangumiExclude = StrSpliter.split(coolQStatus.getBangumiExclude(), ",", true, true);
+//                excludeBangumi.computeIfAbsent(coolQStatus.getQq(), x -> new HashSet<>()).addAll(splitBangumiExclude);
+//            }
+//        }
+//        result.text("通知下面的小伙伴开饭啦，如果不喜欢这个番剧可以：/bangumi rm ").text(String.valueOf(bgmId)).text("\n");
+//        int finalBgmId = bgmId;
+//        //过滤不喜欢的番剧
+//        qqByQQGroup.forEach((group, qqs) -> {
+//            StringBuilder atMember = new StringBuilder();
+//            qqs.forEach(qq -> {
+//                if (!MapUtil.isEmpty(excludeBangumi) &&
+//                        !(excludeBangumi.containsKey(qq) && excludeBangumi.get(qq)
+//                                .contains(String.valueOf(finalBgmId)))) {
+//                    result.at(qq);
+//                }
+//            });
+//            if (StringUtils.isEmpty(atMember.toString())) {
+//                return;
+//            }
+//            getBot().sendGroupMsg(group, result,false);
+//        });
 
 
     }

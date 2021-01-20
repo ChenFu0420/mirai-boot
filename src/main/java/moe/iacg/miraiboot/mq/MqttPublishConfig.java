@@ -43,7 +43,7 @@ public class MqttPublishConfig {
     }
 
 //    @Bean
-    @ServiceActivator(inputChannel = "mqttOutboundChannel")
+//    @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler;
         messageHandler = new MqttPahoMessageHandler(mqttConfig.getClientId(),

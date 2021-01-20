@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author Ghost
  */
-@Component
+//@Component
 //@MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
 public interface MqttGatewayApi {
     void sendToMqtt(String data, @Header(MqttHeaders.TOPIC) String topic);

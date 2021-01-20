@@ -7,7 +7,6 @@ import moe.iacg.miraiboot.annotation.CommandPrefix;
 import moe.iacg.miraiboot.constants.Commands;
 import moe.iacg.miraiboot.model.AnimeModel;
 import moe.iacg.miraiboot.utils.BotUtils;
-import moe.iacg.miraiboot.utils.RegxUtils;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;

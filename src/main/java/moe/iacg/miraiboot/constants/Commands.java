@@ -5,16 +5,15 @@ public enum Commands {
      * 命令全部用小写
      */
     YUANSHEN("ys", "原神相关命令\n" +
-            " - /ys bind 108288915 \n" +
-            " - /ys cookie ***** 【设置米游社Cookie后自动签到】\n" +
-            " - /ys sign 【手动签到】\n" +
-            " - /ys user 【查询角色信息】\n" +
-            " - /ys status 【查询自己的原神信息】\n" +
-            " - /ys status 108288915【查询他人的信息】\n" +
-            " - /ys status @yjx4【群内绑定过的好友信息】\n" +
+//            " - /ys bind 108288915 \n" +
+//            " - /ys cookie ***** 【设置米游社Cookie后自动签到】\n" +
+//            " - /ys sign 【手动签到】\n" +
+//            " - /ys user 【查询角色信息】\n" +
+//            " - /ys status 【查询自己的原神信息】\n" +
+//            " - /ys status 108288915【查询他人的信息】\n" +
+//            " - /ys status @yjx4【群内绑定过的好友信息】\n" +
 //                    "/ys abyss 12-3【查询好友】\n" +
-            " -/ys sp 32-80 【(当前体力)-(目标体力)】 \n"
-
+            " -/ys sp 32-80 【(当前体力)-(目标体力)】"
     ),
     HELP("help", "命令帮助"),
 
