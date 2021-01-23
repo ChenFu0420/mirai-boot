@@ -1,13 +1,17 @@
 package moe.iacg.miraiboot.utils;
 
+import net.lz1998.pbbot.boot.BotBean;
+import net.lz1998.pbbot.bot.ApiSender;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BotUtils extends BotPlugin {
+
     /**
      * @param command
      * @param content
@@ -37,5 +41,6 @@ public class BotUtils extends BotPlugin {
 
         return BotPlugin.MESSAGE_BLOCK;
     }
+
 
 }

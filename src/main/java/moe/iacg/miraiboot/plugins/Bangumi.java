@@ -2,15 +2,21 @@ package moe.iacg.miraiboot.plugins;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.text.StrSpliter;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+import moe.iacg.miraiboot.annotation.CommandPrefix;
+import moe.iacg.miraiboot.constants.Commands;
+import moe.iacg.miraiboot.entity.BangumiStatus;
 import moe.iacg.miraiboot.model.BangumiList;
+import moe.iacg.miraiboot.service.BangumiStatusService;
+import net.lz1998.pbbot.bot.ApiSender;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotContainer;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
+import onebot.OnebotEvent;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,12 +26,20 @@ import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 @Component
+@CommandPrefix(command = Commands.BANGUMI)
 public class Bangumi extends BotPlugin {
 
     private static String lastQuarterBangumi;
     @Autowired
     BotContainer botContainer;
+
+    @Autowired
+    ApiSender apiSender;
+
+    @Autowired
+    BangumiStatusService bangumiStatusService;
 
     @Scheduled(cron = "0 0 5 * * ?")
     @PostConstruct
@@ -40,10 +54,20 @@ public class Bangumi extends BotPlugin {
         lastQuarterBangumi = HttpUtil.get(lastQuarterBangumiURL);
     }
 
-    private Bot getBot() {
+
+    private Bot getBots() {
         return botContainer.getBots().values().stream().findFirst().get();
     }
 
+
+    @Override
+    public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
+        getBots().getGroupList();
+//        List<BangumiStatus> all = bangumiStatusService.get();
+
+
+        return super.onPrivateMessage(bot, event);
+    }
 
     public void sendBangumiUpdateTime() {
 
