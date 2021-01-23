@@ -51,14 +51,20 @@ public class CommandPrefixAspect {
         var prefix = commandPrefix.prefix();
         var alias = Arrays.stream(commandPrefix.alias()).collect(Collectors.toList());
 
-        Object event = joinPoint.getArgs()[1];
+        Object[] args = joinPoint.getArgs();
+        if (args == null || args.length == 0) {
+            return BotPlugin.MESSAGE_IGNORE;
+
+        }
+
+        Object event = args[1];
         String prefixCommand = prefix + command;
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
             //私聊消息
-            return judge(joinPoint, prefixCommand,alias, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
+            return judge(joinPoint, prefixCommand, alias, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
         } else {
             //群消息处理
-            return judge(joinPoint, prefixCommand,alias, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
+            return judge(joinPoint, prefixCommand, alias, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
         }
     }
 

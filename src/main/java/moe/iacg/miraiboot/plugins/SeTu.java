@@ -59,7 +59,7 @@ public class SeTu extends BotPlugin {
             }
         }
 
-        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 2, 1);
+        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 1, 1);
 
         if (seTuResponseModel == null) {
             builder.text("调用色图服务出错");
