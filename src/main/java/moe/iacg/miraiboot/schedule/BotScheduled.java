@@ -1,5 +1,6 @@
 package moe.iacg.miraiboot.schedule;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.map.MapUtil;
@@ -48,15 +49,15 @@ public class BotScheduled {
         String bangumiLayerYearJSON = HttpUtil.get("https://bgmlist.com/tempapi/archive.json");
         TreeMap<String, Object> data = MapUtil.sort(JSON.parseObject(bangumiLayerYearJSON).getJSONObject("data"));
         var yearURLCollect = (Collection) data.values();
-        var lastYear = (Map<String,Object>)yearURLCollect.toArray()[yearURLCollect.size() - 1];
+        var lastYear = (Map<String, Object>) yearURLCollect.toArray()[yearURLCollect.size() - 1];
         var quarterCollect = lastYear.values();
-        var lastQuarter = (Map<String,Object>) quarterCollect.toArray()[quarterCollect.size() - 1];
-        var lastQuarterBangumiURL =(String)lastQuarter.get("path");
+        var lastQuarter = (Map<String, Object>) quarterCollect.toArray()[quarterCollect.size() - 1];
+        var lastQuarterBangumiURL = (String) lastQuarter.get("path");
         lastQuarterBangumi = HttpUtil.get(lastQuarterBangumiURL);
     }
 
 
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "* */29 * * * ?")
     public void sendBangumiUpdateTime() {
 
         Collection<Object> bgList = JSON.parseObject(lastQuarterBangumi).values();
@@ -95,7 +96,7 @@ public class BotScheduled {
                 break;
             }
         }
-        if (StringUtils.isEmpty(result.toString())) {
+        if (CollectionUtil.isEmpty(result.getMessageChain())) {
             return;
         }
         List<BangumiStatus> bangumiStatusByBangumiFlag = bangumiStatusService.findByBangumiFlag();
@@ -117,20 +118,19 @@ public class BotScheduled {
         int finalBgmId = bgmId;
         //过滤不喜欢的番剧
         qqByQQGroup.forEach((group, qqs) -> {
-            StringBuilder atMember = new StringBuilder();
+            Msg atMember = new Msg();
             qqs.forEach(qq -> {
                 if (!MapUtil.isEmpty(excludeBangumi) &&
                         !(excludeBangumi.containsKey(qq) && excludeBangumi.get(qq)
                                 .contains(String.valueOf(finalBgmId)))) {
                     result.at(qq);
+                    atMember.at(qq);
                 }
             });
-            if (StringUtils.isEmpty(atMember.toString())) {
+            if (CollectionUtil.isEmpty(atMember.getMessageChain())) {
                 return;
             }
-            getBot().sendGroupMsg(group, result, false);
+            result.sendToGroup(getBot(), group);
         });
-
-
     }
 }
