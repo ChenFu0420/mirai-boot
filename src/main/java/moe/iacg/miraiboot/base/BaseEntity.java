@@ -27,11 +27,12 @@ public abstract class BaseEntity implements Serializable {
 
 
     private static final long serialVersionUID = 4539548636907434658L;
+
     @Id
     @TableId
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "唯一标识")
-    private Long id;
+    private Integer id;
 
 
     @CreatedDate

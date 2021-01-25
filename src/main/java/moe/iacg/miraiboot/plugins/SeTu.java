@@ -1,11 +1,8 @@
 package moe.iacg.miraiboot.plugins;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
 import moe.iacg.miraiboot.constants.Commands;
@@ -38,6 +35,10 @@ public class SeTu extends BotPlugin {
     @NacosValue("${setu.api.key}")
     private String seTuAPIKeys;
 
+    @NacosValue("${lolicon.proxy.url}")
+    private String loliconProxyURL;
+
+
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
         return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
@@ -53,38 +54,39 @@ public class SeTu extends BotPlugin {
         Msg builder = Msg.builder();
 
         for (String alias : this.getClass().getAnnotation(CommandPrefix.class).alias()) {
-            if (message.contains(alias)){
+            if (message.contains(alias)) {
                 keyword = null;
                 break;
             }
         }
 
-        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 1, 1);
-
-        if (seTuResponseModel == null) {
-            builder.text("调用色图服务出错");
-            return builder;
-        }
-        if (seTuResponseModel.getCode() != 0) {
-            if (seTuResponseModel.getCode() == HttpStatus.HTTP_NOT_FOUND) {
-                builder.text("找不到符合关键字的色图");
-            }
-            if (seTuResponseModel.getCode() == HttpStatus.HTTP_FORBIDDEN) {
-                builder.text("由于不规范的操作而被拒绝调用");
-            }
-            if (seTuResponseModel.getCode() == HttpStatus.HTTP_UNAUTHORIZED) {
-                builder.text("APIKEY 不存在或被封禁");
-            }
-            if (seTuResponseModel.getCode() == 429) {
-                builder.text("达到调用额度限制");
-            }
-            if (seTuResponseModel.getCode() == -1) {
-                builder.text("内部错误，请向 i@loli.best 反馈");
-            }
-            return builder;
-        }
-        SeTuResponseModel.Setu firstSeTu = seTuResponseModel.getData().stream().findFirst().get();
-        builder.image(firstSeTu.getUrl());
+//        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 1, 1);
+//
+//        if (seTuResponseModel == null) {
+//            builder.text("调用色图服务出错");
+//            return builder;
+//        }
+//        if (seTuResponseModel.getCode() != 0) {
+//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_NOT_FOUND) {
+//                builder.text("找不到符合关键字的色图");
+//            }
+//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_FORBIDDEN) {
+//                builder.text("由于不规范的操作而被拒绝调用");
+//            }
+//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_UNAUTHORIZED) {
+//                builder.text("APIKEY 不存在或被封禁");
+//            }
+//            if (seTuResponseModel.getCode() == 429) {
+//                builder.text("达到调用额度限制");
+//            }
+//            if (seTuResponseModel.getCode() == -1) {
+//                builder.text("内部错误，请向 i@loli.best 反馈");
+//            }
+//            return builder;
+//        }
+//        SeTuResponseModel.Setu firstSeTu = seTuResponseModel.getData().stream().findFirst().get();
+//        builder.image(firstSeTu.getUrl());
+        builder.image(getSeTuApi(keyword, 1));
 //        builder.text("作品名称：").text(firstSeTu.getTitle()).text("\n画师：").text(firstSeTu.getAuthor());
         return builder;
     }
@@ -134,5 +136,23 @@ public class SeTu extends BotPlugin {
         redisUtil.expireAt(RedisUtil.BOT_SETU_COUNT, instance.getTime());
 
         return seTuResponseModel;
+    }
+
+
+    /**
+     * lolicon_proxy
+     *
+     * @param keyword
+     * @param r18
+     * @return
+     */
+    public String getSeTuApi(String keyword, int r18) {
+        Map<String, Object> requestData = new HashMap<>();
+        if (!StringUtils.isEmpty(keyword)) {
+            requestData.put("keyword", keyword);
+        }
+        requestData.put("r18", r18);
+        return HttpUtil.get(loliconProxyURL, requestData);
+
     }
 }
