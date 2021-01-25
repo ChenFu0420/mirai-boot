@@ -57,7 +57,7 @@ public class BotScheduled {
     }
 
 
-    @Scheduled(cron = "* */29 * * * ?")
+    @Scheduled(cron = "* */1 * * * ?")
     public void sendBangumiUpdateTime() {
 
         Collection<Object> bgList = JSON.parseObject(lastQuarterBangumi).values();

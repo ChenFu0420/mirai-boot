@@ -1,5 +1,6 @@
 package moe.iacg.miraiboot.plugins;
 
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
@@ -50,6 +51,7 @@ public class SeTu extends BotPlugin {
     }
 
     private Msg sendSeTu(String message) {
+
         String keyword = BotUtils.removeCommandPrefix(Commands.SETU.getCommand(), message);
         Msg builder = Msg.builder();
 
@@ -59,6 +61,13 @@ public class SeTu extends BotPlugin {
                 break;
             }
         }
+
+        if ("count".equals(keyword)) {
+            String setuCount = redisUtil.get(RedisUtil.BOT_SETU_COUNT);
+
+            return builder.text("今天咱发了").text(setuCount).text("份色图，要节制啊QwQ");
+        }
+        builder.image(getSeTuApi(keyword, 1));
 
 //        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 1, 1);
 //
@@ -86,11 +95,27 @@ public class SeTu extends BotPlugin {
 //        }
 //        SeTuResponseModel.Setu firstSeTu = seTuResponseModel.getData().stream().findFirst().get();
 //        builder.image(firstSeTu.getUrl());
-        builder.image(getSeTuApi(keyword, 1));
 //        builder.text("作品名称：").text(firstSeTu.getTitle()).text("\n画师：").text(firstSeTu.getAuthor());
         return builder;
     }
 
+    /**
+     * lolicon_proxy
+     *
+     * @param keyword
+     * @param r18
+     * @return
+     */
+    public String getSeTuApi(String keyword, int r18) {
+        setuCount();
+        Map<String, Object> requestData = new HashMap<>();
+        if (!StringUtils.isEmpty(keyword)) {
+            requestData.put("keyword", keyword);
+        }
+        requestData.put("r18", r18);
+        return loliconProxyURL + ReUtil.get("href=\"(.*)\">",
+                HttpUtil.get(loliconProxyURL + "/lolicon", requestData), 1);
+    }
 
     /**
      * 文档：https://api.lolicon.app/
@@ -127,6 +152,12 @@ public class SeTu extends BotPlugin {
         jsonData = HttpUtil.get("https://api.lolicon.app/setu/", requestData);
         seTuResponseModel = JSON.parseObject(jsonData, SeTuResponseModel.class);
 
+        setuCount();
+
+        return seTuResponseModel;
+    }
+
+    private void setuCount() {
         redisUtil.incrBy(RedisUtil.BOT_SETU_COUNT, 1);
 
         Calendar instance = Calendar.getInstance();
@@ -134,25 +165,8 @@ public class SeTu extends BotPlugin {
         instance.set(Calendar.MINUTE, 59);
         instance.set(Calendar.SECOND, 58);
         redisUtil.expireAt(RedisUtil.BOT_SETU_COUNT, instance.getTime());
-
-        return seTuResponseModel;
     }
 
 
-    /**
-     * lolicon_proxy
-     *
-     * @param keyword
-     * @param r18
-     * @return
-     */
-    public String getSeTuApi(String keyword, int r18) {
-        Map<String, Object> requestData = new HashMap<>();
-        if (!StringUtils.isEmpty(keyword)) {
-            requestData.put("keyword", keyword);
-        }
-        requestData.put("r18", r18);
-        return HttpUtil.get(loliconProxyURL, requestData);
 
-    }
 }
