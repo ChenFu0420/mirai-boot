@@ -72,7 +72,7 @@ public class Bangumi extends BotPlugin {
             } else {
                 bangumiStatus.setId(key).setBangumiFlag(1);
                 bangumiStatusService.update(bangumiStatus);
-                messageBuilder.text("再次订阅了新番更新提醒，新番更新的时候会@你");
+                messageBuilder.text("再次订阅了新番更新提醒，新番更新的时候会").at(qq).text("你哈");
             }
             return BotUtils.sendMessage(bot, event, messageBuilder);
         }
