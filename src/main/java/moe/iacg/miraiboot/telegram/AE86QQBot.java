@@ -1,6 +1,8 @@
 package moe.iacg.miraiboot.telegram;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.luciad.imageio.webp.WebPReadParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.utils.BotUtils;
@@ -13,6 +15,10 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +87,29 @@ public class AE86QQBot extends TelegramLongPollingBot {
                         String fileId = updateMessage.getSticker().getFileId();
                         GetFile getFile = new GetFile();
                         getFile.setFileId(fileId);
-                        msg.image(execute(getFile).getFileUrl(getBotToken()));
+                        File execute = execute(getFile);
+                        String fileUrl = execute.getFileUrl(getBotToken());
+
+
+                        // Obtain a WebP ImageReader instance
+                        ImageReader reader = ImageIO.getImageReadersByMIMEType("image/webp").next();
+
+                        // Configure decoding parameters
+                        WebPReadParam readParam = new WebPReadParam();
+                        readParam.setBypassFiltering(true);
+
+                        // Configure the input on the ImageReader
+                        reader.setInput(new FileImageInputStream(FileUtil.file(execute.getFilePath())));
+
+                        // Decode the image
+                        BufferedImage image = reader.read(0, readParam);
+
+                        var file = new java.io.File(fileId + ".png");
+                        ImageIO.write(image, "png", file);
+
+                        log.info(FileUtil.getMimeType(file.getPath()));
+//                        msg.image(fileUrl);
+                        msg.image(file.getPath());
                         botUtils.sendGroupMsg(tgGroupIdByGroupId.getValue(), msg);
                     }
                     if (updateMessage.hasText()) {
