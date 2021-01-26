@@ -1,8 +1,7 @@
 package moe.iacg.miraiboot.utils;
 
-import net.lz1998.pbbot.boot.BotBean;
-import net.lz1998.pbbot.bot.ApiSender;
 import net.lz1998.pbbot.bot.Bot;
+import net.lz1998.pbbot.bot.BotContainer;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
@@ -11,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BotUtils extends BotPlugin {
+
+    @Autowired
+    BotContainer botContainer;
 
     /**
      * @param command
@@ -36,9 +38,17 @@ public class BotUtils extends BotPlugin {
             var eventGroup = (OnebotEvent.GroupMessageEvent) event;
             bot.sendGroupMsg(eventGroup.getGroupId(),
                     msg, false);
-
         }
 
+        return BotPlugin.MESSAGE_BLOCK;
+    }
+
+    public Bot getFirstBot() {
+        return botContainer.getBots().values().stream().findFirst().get();
+    }
+
+    public int sendGroupMsg(Long groupId, Msg msg) {
+        getFirstBot().sendGroupMsg(groupId, msg, false);
         return BotPlugin.MESSAGE_BLOCK;
     }
 

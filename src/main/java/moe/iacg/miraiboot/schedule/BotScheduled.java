@@ -31,10 +31,6 @@ public class BotScheduled {
     private static String lastQuarterBangumi;
     @Autowired
     BotContainer botContainer;
-
-    @Autowired
-    ApiSender apiSender;
-
     @Autowired
     BangumiStatusService bangumiStatusService;
 
