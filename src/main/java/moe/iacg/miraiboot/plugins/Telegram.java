@@ -25,11 +25,15 @@ public class Telegram extends BotPlugin {
 
             if (event.getGroupId() == tgGroupAndQQGroup.getValue()) {
                 for (OnebotBase.Message message : event.getMessageList()) {
+                    OnebotEvent.GroupMessageEvent.Sender sender = event.getSender();
+                    String senderTitle = sender.getNickname() + "(" + sender.getUserId() + ")" + "：\n";
+
                     if (message.getType().equals("image")) {
-                        ae86QQBot.sendImageFromUrl(message.getDataOrThrow("url"), tgGroupAndQQGroup.getKey());
+                        ae86QQBot.sendImageFromUrl(senderTitle
+                                + message.getDataOrThrow("url"), tgGroupAndQQGroup.getKey(), senderTitle);
                     }
                     if (message.getType().equals("text")) {
-                        ae86QQBot.sendTextMessage(message.getDataOrThrow("text"), tgGroupAndQQGroup.getKey());
+                        ae86QQBot.sendTextMessage(senderTitle + message.getDataOrThrow("text"), tgGroupAndQQGroup.getKey());
                     }
                 }
             }

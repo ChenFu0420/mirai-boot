@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,13 +56,15 @@ public class AE86QQBot extends TelegramLongPollingBot {
         return defaultBotOptions;
     }
 
-    public void sendImageFromUrl(String url, Long chatId) {
+    public void sendImageFromUrl(String url, Long chatId,String caption) {
         // Create send method
         SendPhoto sendPhotoRequest = new SendPhoto();
+
         // Set destination chat id
         sendPhotoRequest.setChatId(String.valueOf(chatId));
         // Set the photo url as a simple photo
         sendPhotoRequest.setPhoto(new InputFile(url));
+        sendPhotoRequest.setCaption(caption);
         try {
             // Execute the method
             execute(sendPhotoRequest);
@@ -82,7 +85,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
             // Download the file calling AbsSender::downloadFile method
             return downloadFile(filePath);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
 
         return null;
@@ -133,9 +136,16 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
                         // Decode the image
                         BufferedImage image = reader.read(0, readParam);
+                        java.io.File file ;
+                        try {
+                             file = new java.io.File(fileId + ".png");
 
-                        var file = new java.io.File(fileId + ".png");
-                        ImageIO.write(image, "png", file);
+                            ImageIO.write(image, "png", file);
+                        } catch (IOException e) {
+                             file = new java.io.File(fileId + ".gif");
+                            ImageIO.write(image, "gif", file);
+
+                        }
 
                         log.info(FileUtil.getMimeType(file.getPath()));
 //                        msg.image(fileUrl);
@@ -163,14 +173,8 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
                     }
                 }
-
-
             }
-
-
         }
-
-
         // We check if the update has a message and the message has text
         if (update.hasMessage() && updateMessage.hasText()) {
             SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
@@ -188,7 +192,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
     }
 
