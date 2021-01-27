@@ -15,13 +15,13 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.games.Animation;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
         return defaultBotOptions;
     }
 
-    public void sendImageFromUrl(String url, Long chatId,String caption) {
+    public void sendImageFromUrl(String url, Long chatId, String caption) {
         // Create send method
         SendPhoto sendPhotoRequest = new SendPhoto();
 
@@ -111,7 +111,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
                 Msg msg = Msg.builder();
                 User user = updateMessage.getFrom();
-                msg.text(user.getUserName() + "：");
+                msg.text(user.getFirstName() + " " + user.getLastName() + "：\n");
 
                 if (updateMessage.getChatId().equals(tgGroupIdByGroupId.getKey())) {
                     if (updateMessage.hasSticker()) {
@@ -127,7 +127,6 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
 
                         reader.setInput(new FileImageInputStream(webpFile));
-
                         // Configure decoding parameters
                         WebPReadParam readParam = new WebPReadParam();
                         readParam.setBypassFiltering(true);
@@ -136,16 +135,10 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
                         // Decode the image
                         BufferedImage image = reader.read(0, readParam);
-                        java.io.File file ;
-                        try {
-                             file = new java.io.File("image/"+fileId + ".png");
+                        java.io.File file;
 
-                            ImageIO.write(image, "png", file);
-                        } catch (IOException e) {
-                             file = new java.io.File(fileId + ".gif");
-                            ImageIO.write(image, "gif", file);
-
-                        }
+                        file = FileUtil.touch("./image/" + fileId + ".png");
+                        ImageIO.write(image, "png", file);
 
                         log.info(FileUtil.getMimeType(file.getPath()));
 //                        msg.image(fileUrl);
@@ -170,7 +163,13 @@ public class AE86QQBot extends TelegramLongPollingBot {
                         botUtils.sendGroupMsg(tgGroupIdByGroupId.getValue(), msg);
                     }
                     if (updateMessage.hasAnimation()) {
-
+                        Animation animation = updateMessage.getAnimation();
+                        GetFile getFile = new GetFile();
+                        getFile.setFileId(animation.getFileId());
+                        File execute = execute(getFile);
+                        String fileUrl = execute.getFileUrl(getBotToken());
+                        msg.image(fileUrl);
+                        botUtils.sendGroupMsg(tgGroupIdByGroupId.getValue(), msg);
                     }
                 }
             }

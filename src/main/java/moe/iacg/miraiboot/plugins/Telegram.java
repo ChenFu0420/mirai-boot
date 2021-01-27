@@ -24,10 +24,9 @@ public class Telegram extends BotPlugin {
         for (Map.Entry<Long, Long> tgGroupAndQQGroup : ae86QQBot.tgGroupIdByGroupId().entrySet()) {
 
             if (event.getGroupId() == tgGroupAndQQGroup.getValue()) {
+                OnebotEvent.GroupMessageEvent.Sender sender = event.getSender();
+                String senderTitle = sender.getNickname() + "(" + sender.getUserId() + ")" + "：\n";
                 for (OnebotBase.Message message : event.getMessageList()) {
-                    OnebotEvent.GroupMessageEvent.Sender sender = event.getSender();
-                    String senderTitle = sender.getNickname() + "(" + sender.getUserId() + ")" + "：\n";
-
                     if (message.getType().equals("image")) {
                         ae86QQBot.sendImageFromUrl(senderTitle
                                 + message.getDataOrThrow("url"), tgGroupAndQQGroup.getKey(), senderTitle);
