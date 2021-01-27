@@ -138,7 +138,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
                         BufferedImage image = reader.read(0, readParam);
                         java.io.File file ;
                         try {
-                             file = new java.io.File(fileId + ".png");
+                             file = new java.io.File("image/"+fileId + ".png");
 
                             ImageIO.write(image, "png", file);
                         } catch (IOException e) {

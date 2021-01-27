@@ -1,9 +1,12 @@
 spring:
   bot:
     plugin-list: # 配置插件列表（有序），如果插件返回0，继续执行剩余插件，如果插件返回1，终止剩余插件执行
-      - moe.iacg.miraiboot.plugins.Log #
       - moe.iacg.miraiboot.plugins.Help #
-      - moe.iacg.miraiboot.plugins.SeTu # 色图
+      - moe.iacg.miraiboot.plugins.SeTu #
+      - moe.iacg.miraiboot.plugins.Anime #
+      - moe.iacg.miraiboot.plugins.Bangumi #
+      - moe.iacg.miraiboot.plugins.Genshin #
+      - moe.iacg.miraiboot.plugins.Telegram #
   profiles:
     active: prod
 
