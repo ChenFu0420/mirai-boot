@@ -48,7 +48,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
     private BotUtils botUtils;
 
     AE86QQBot() {
-        super(defaultBotOptions());
+//        super(defaultBotOptions());
     }
 
     private static DefaultBotOptions defaultBotOptions() {
@@ -142,13 +142,6 @@ public class AE86QQBot extends TelegramLongPollingBot {
                     }
                 }
             }
-        }
-        // We check if the update has a message and the message has text
-        if (update.hasMessage() && updateMessage.hasText()) {
-            SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
-            message.setChatId(String.valueOf(updateMessage.getChatId()));
-            message.setText(updateMessage.getText());
-
         }
     }
 
