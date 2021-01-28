@@ -2,6 +2,7 @@ package moe.iacg.miraiboot.aop;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class CommandPrefixAspect {
         var commandPrefix = AnnotationUtils.findAnnotation(joinPoint.getTarget().getClass(), CommandPrefix.class);
         var command = commandPrefix.command().getCommand();
         var prefix = commandPrefix.prefix();
-        var alias = Arrays.stream(commandPrefix.alias()).collect(Collectors.toList());
+        var alias = commandPrefix.alias();
 
         Object[] args = joinPoint.getArgs();
         if (args == null || args.length == 0) {
@@ -69,7 +70,7 @@ public class CommandPrefixAspect {
     }
 
     @SneakyThrows
-    private Object judge(ProceedingJoinPoint joinPoint, String command, List<String> alias, String rawMessage) {
-        return rawMessage.startsWith(command) || CollectionUtil.isNotEmpty(alias) && alias.contains(rawMessage) ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
+    private Object judge(ProceedingJoinPoint joinPoint, String command, String[] alias, String rawMessage) {
+        return rawMessage.startsWith(command) || StrUtil.containsAny(rawMessage,alias)  ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
     }
 }
