@@ -127,8 +127,8 @@ public class AE86QQBot extends TelegramLongPollingBot {
 
                         String fileUrl = execute.getFileUrl(getBotToken());
                         msg.image(fileUrl);
+                        botUtils.sendGroupMsg(tgGroupIdByGroupId.getValue(), msg);
                     }
-                    botUtils.sendGroupMsg(tgGroupIdByGroupId.getValue(), msg);
 
 
                     if (updateMessage.hasAnimation()) {
