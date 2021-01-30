@@ -2,12 +2,16 @@ package moe.iacg.miraiboot.utils;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import moe.iacg.miraiboot.constants.MsgDataConstant;
+import moe.iacg.miraiboot.constants.MsgTypeConstant;
 import moe.iacg.miraiboot.enums.FileType;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotContainer;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
+import onebot.OnebotBase;
 import onebot.OnebotEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,9 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -52,13 +59,58 @@ public class BotUtils extends BotPlugin {
         return BotPlugin.MESSAGE_BLOCK;
     }
 
+
+    /**
+     * 根据type获取消息
+     *
+     * @param messageList
+     * @param type
+     * @return
+     */
+    public static List<String> getMessageForType(List<OnebotBase.Message> messageList, String type) {
+        //不同消息类型
+        var messageStream = messageList.stream()
+                .filter(message -> message.getType().equals(type));
+
+        //返回消息文字
+        if (MsgTypeConstant.TEXT.equals(type)) {
+            return messageStream
+                    .map(message -> message.getDataOrThrow(type))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.toList());
+        }
+        //返回at QQ号
+        if (MsgTypeConstant.AT.equals(type)) {
+            return messageStream
+                    .map(message -> message.getDataOrThrow(MsgDataConstant.QQ))
+                    .collect(Collectors.toList());
+        }
+        //返回图片
+        if (MsgTypeConstant.IMAGE.equals(type)) {
+            return messageStream
+                    .map(message -> message.getDataOrThrow(MsgDataConstant.URL))
+                    .collect(Collectors.toList());
+        }
+        //表情
+        if (MsgTypeConstant.FACE.equals(type)) {
+            return messageStream
+                    .map(message -> message.getDataOrThrow(MsgDataConstant.ID))
+                    .collect(Collectors.toList());
+        }
+        //回复消息的内容
+        if (MsgTypeConstant.REPLY.equals(type)) {
+            return getMessageForType(messageList, MsgDataConstant.TEXT);
+        }
+        return Collections.emptyList();
+    }
+
     public static String bytesToHexString(byte[] src) {
         StringBuilder stringBuilder = new StringBuilder();
         if (src == null || src.length <= 0) {
             return null;
         }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
+        for (byte b : src) {
+            int v = b & 0xFF;
             String hv = Integer.toHexString(v);
             if (hv.length() < 2) {
                 stringBuilder.append(0);
@@ -92,9 +144,7 @@ public class BotUtils extends BotPlugin {
 
         String hex = bytesToHexString(byteType).toUpperCase();
 
-        String suffix = FileType.getSuffix(hex);
-
-        return suffix;
+        return FileType.getSuffix(hex);
     }
 
 }

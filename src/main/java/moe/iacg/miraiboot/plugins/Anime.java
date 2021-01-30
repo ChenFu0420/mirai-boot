@@ -4,7 +4,7 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
-import moe.iacg.miraiboot.constants.Commands;
+import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.model.AnimeModel;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.bot.Bot;

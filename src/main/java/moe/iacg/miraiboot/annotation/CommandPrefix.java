@@ -1,7 +1,7 @@
 package moe.iacg.miraiboot.annotation;
 
 
-import moe.iacg.miraiboot.constants.Commands;
+import moe.iacg.miraiboot.enums.Commands;
 
 import java.lang.annotation.*;
 

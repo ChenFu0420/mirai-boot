@@ -2,7 +2,7 @@ package moe.iacg.miraiboot.plugins;
 
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
-import moe.iacg.miraiboot.constants.Commands;
+import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.boot.BotProperties;
 import net.lz1998.pbbot.bot.Bot;
@@ -12,8 +12,6 @@ import onebot.OnebotEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @Component

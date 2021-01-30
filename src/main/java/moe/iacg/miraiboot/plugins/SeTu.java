@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
-import moe.iacg.miraiboot.constants.Commands;
+import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.model.SeTuResponseModel;
 import moe.iacg.miraiboot.utils.BotUtils;
 import moe.iacg.miraiboot.utils.RedisUtil;

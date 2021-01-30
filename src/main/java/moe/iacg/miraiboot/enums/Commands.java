@@ -1,4 +1,4 @@
-package moe.iacg.miraiboot.constants;
+package moe.iacg.miraiboot.enums;
 
 public enum Commands {
     /**

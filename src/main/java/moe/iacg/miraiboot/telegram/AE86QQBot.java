@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.utils.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -44,20 +46,15 @@ public class AE86QQBot extends TelegramLongPollingBot {
     @NacosValue("${telegramGroup.by.qqGroup:-1001482310527,199324349}")
     private String tgGroupByQQGroup;
 
+
+
     @Autowired
     private BotUtils botUtils;
 
-    AE86QQBot() {
-//        super(defaultBotOptions());
+    AE86QQBot(@Autowired DefaultBotOptions defaultBotOptions) {
+        super(defaultBotOptions);
     }
 
-    private static DefaultBotOptions defaultBotOptions() {
-        DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-        defaultBotOptions.setProxyHost("127.0.0.1");
-        defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
-        defaultBotOptions.setProxyPort(1080);
-        return defaultBotOptions;
-    }
 
     @Override
     public String getBotUsername() {

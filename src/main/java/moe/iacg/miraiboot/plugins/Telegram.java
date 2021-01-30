@@ -2,6 +2,7 @@ package moe.iacg.miraiboot.plugins;
 
 import cn.hutool.core.util.ReUtil;
 import lombok.extern.slf4j.Slf4j;
+import moe.iacg.miraiboot.constants.MsgTypeConstant;
 import moe.iacg.miraiboot.enums.FileType;
 import moe.iacg.miraiboot.telegram.AE86QQBot;
 import moe.iacg.miraiboot.utils.BotUtils;
@@ -33,11 +34,21 @@ public class Telegram extends BotPlugin {
             Long tgGroupId = tgGroupAndQQGroup.getKey();
             long qqGroupId = event.getGroupId();
             int messageId = event.getMessageId();
+            var sender = event.getSender();
+            List<OnebotBase.Message> messageList = event.getMessageList();
+            List<String> types = messageList.stream().map(OnebotBase.Message::getType).collect(Collectors.toList());
+
             if (qqGroupId == tgGroupAndQQGroup.getValue()) {
-                OnebotEvent.GroupMessageEvent.Sender sender = event.getSender();
                 String senderTitle = sender.getNickname() + "(" + messageId + ")" + "：\n";
-                List<OnebotBase.Message> messageList = event.getMessageList();
-                List<String> types = messageList.stream().map(OnebotBase.Message::getType).collect(Collectors.toList());
+
+                if (types.contains(MsgTypeConstant.REPLY)) {
+                    List<String> messageForText = BotUtils.getMessageForType(messageList, MsgTypeConstant.REPLY);
+
+                    String msg = messageForText.stream().reduce("", (a, b) -> a + b);
+                    String tgMessageId = ReUtil.get("\\((.*)\\)：\n", msg, 1);
+                }
+
+
                 for (OnebotBase.Message message : messageList) {
                     String type = message.getType();
                     if (types.contains("reply")) {
