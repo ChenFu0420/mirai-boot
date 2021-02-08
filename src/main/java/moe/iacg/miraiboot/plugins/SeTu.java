@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Ghost
@@ -39,10 +40,21 @@ public class SeTu extends BotPlugin {
     @NacosValue("${lolicon.proxy.url}")
     private String loliconProxyURL;
 
+    @NacosValue("${setu.auth.groups}")
+    private String seTuAuthGroups;
 
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
+        String[] groups = seTuAuthGroups.split(",");
+        boolean hasGroup = Arrays.stream(groups).anyMatch(group -> group.equals(String.valueOf(event.getGroupId())));
+
+        if (hasGroup){
+            return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
+
+        }else {
+            return BotUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群没有使用该功能权限，请寻找管理员申请"));
+        }
+
     }
 
     @Override

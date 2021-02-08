@@ -43,7 +43,7 @@ public class AE86QQBot extends TelegramLongPollingBot {
     private String token;
     @NacosValue("${telegram.AE86QQBot.username}")
     private String username;
-    @NacosValue("${telegramGroup.by.qqGroup:-1001482310527,199324349}")
+    @NacosValue("${telegramGroup.by.qqGroup}")
     private String tgGroupByQQGroup;
 
 

@@ -26,7 +26,7 @@ public enum Commands {
 
     AMQ("amq", "到点了，网抑云开启 (AMQ <anti-motivational quotes>)"),
 
-    START_SERVER("startserver", "开启服务端，现在支持服务端：AcademyCraft 如：/startserver AcademyCraft"),
+    MCSM("mcsm", "二级命令 status、start_server、stop_server"),
 
     ANIME("anime", "以图搜番"),
 

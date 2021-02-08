@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class BotUtils extends BotPlugin {
+public class BotUtils {
 
     @Autowired
     BotContainer botContainer;
@@ -41,6 +41,17 @@ public class BotUtils extends BotPlugin {
     public static String removeCommandPrefix(String command, String content) {
 
         return content.replace("/" + command, "").trim();
+    }
+
+    public static String getSecondCommand(String command, String content) {
+        String secondContent = removeCommandPrefix(command, content);
+        secondContent = secondContent.trim();
+
+        String[] splitSecondContent = secondContent.split(" ");
+        if (splitSecondContent.length != 1) {
+            return null;
+        }
+        return secondContent;
     }
 
     public static <T> int sendMessage(Bot bot, T event, Msg msg) {

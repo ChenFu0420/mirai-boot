@@ -33,10 +33,7 @@ public class Anime extends BotPlugin {
 
     }
     private Msg queryAnime(OnebotBase.Message message) {
-
         Msg builder = Msg.builder();
-
-
         String result = HttpUtil.get("https://trace.moe/api/search?url=" +message.getDataMap().get("url"));
         if ("\"Error reading imagenull\"".equals(result)) {
             builder.text("你发送的图片过大或是GIF导致搜索失败:P");
