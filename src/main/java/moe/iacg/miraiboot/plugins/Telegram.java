@@ -11,20 +11,18 @@ import net.lz1998.pbbot.bot.BotPlugin;
 import onebot.OnebotBase;
 import onebot.OnebotEvent;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 @Slf4j
 public class Telegram extends BotPlugin {
-    @Autowired
+//    @Autowired
     AE86QQBot ae86QQBot;
 
-    @Autowired
+//    @Autowired
     BotUtils botUtils;
 
     @Override

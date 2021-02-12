@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.constants.MsgDataConstant;
 import moe.iacg.miraiboot.constants.MsgTypeConstant;
+import moe.iacg.miraiboot.constants.SenderRoleConstant;
 import moe.iacg.miraiboot.enums.FileType;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotContainer;
@@ -29,6 +30,10 @@ public class BotUtils {
 
     @Autowired
     BotContainer botContainer;
+
+    public Bot getFirstBot() {
+        return botContainer.getBots().values().stream().findFirst().get();
+    }
 
     /**
      * @param command
@@ -70,6 +75,10 @@ public class BotUtils {
         return BotPlugin.MESSAGE_BLOCK;
     }
 
+    public static boolean hasGroupAdmin(OnebotEvent.GroupMessageEvent event) {
+        String role = event.getSender().getRole();
+        return (role.equals(SenderRoleConstant.ADMIN) || role.equals(SenderRoleConstant.OWNER));
+    }
 
     /**
      * 根据type获取消息
@@ -131,9 +140,6 @@ public class BotUtils {
         return stringBuilder.toString();
     }
 
-    public Bot getFirstBot() {
-        return botContainer.getBots().values().stream().findFirst().get();
-    }
 
     public int sendGroupMsg(Long groupId, Msg msg) {
         getFirstBot().sendGroupMsg(groupId, msg, false);

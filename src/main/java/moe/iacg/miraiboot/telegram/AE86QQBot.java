@@ -2,7 +2,6 @@ package moe.iacg.miraiboot.telegram;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ReUtil;
-import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.luciad.imageio.webp.WebPReadParam;
 import lombok.SneakyThrows;
@@ -10,10 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.utils.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
@@ -35,15 +30,15 @@ import java.util.Map;
 /**
  * @author Ghost
  */
-@Component
+//@Component
 @Slf4j
 public class AE86QQBot extends TelegramLongPollingBot {
 
-    @NacosValue("${telegram.AE86QQBot.token}")
+//    @NacosValue("${telegram.AE86QQBot.token}")
     private String token;
-    @NacosValue("${telegram.AE86QQBot.username}")
+//    @NacosValue("${telegram.AE86QQBot.username}")
     private String username;
-    @NacosValue("${telegramGroup.by.qqGroup}")
+//    @NacosValue("${telegramGroup.by.qqGroup}")
     private String tgGroupByQQGroup;
 
 
@@ -51,9 +46,9 @@ public class AE86QQBot extends TelegramLongPollingBot {
     @Autowired
     private BotUtils botUtils;
 
-    AE86QQBot(@Autowired DefaultBotOptions defaultBotOptions) {
-        super(defaultBotOptions);
-    }
+//    AE86QQBot(@Autowired DefaultBotOptions defaultBotOptions) {
+//        super(defaultBotOptions);
+//    }
 
 
     @Override

@@ -63,7 +63,7 @@ public enum Commands {
     }
 
     public String getCommand() {
-        return command;
+        return this.command;
     }
 
     public void setCommand(String command) {
@@ -71,7 +71,7 @@ public enum Commands {
     }
 
     public String getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(String description) {

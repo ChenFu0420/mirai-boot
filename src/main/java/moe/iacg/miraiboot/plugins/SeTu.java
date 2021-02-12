@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Ghost
@@ -42,16 +41,17 @@ public class SeTu extends BotPlugin {
 
     @NacosValue("${setu.auth.groups}")
     private String seTuAuthGroups;
+    public static final String BOT_SETU_COUNT = "bot:setu:count";
 
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
         String[] groups = seTuAuthGroups.split(",");
         boolean hasGroup = Arrays.stream(groups).anyMatch(group -> group.equals(String.valueOf(event.getGroupId())));
 
-        if (hasGroup){
+        if (hasGroup) {
             return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
 
-        }else {
+        } else {
             return BotUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群没有使用该功能权限，请寻找管理员申请"));
         }
 
@@ -75,7 +75,7 @@ public class SeTu extends BotPlugin {
         }
 
         if ("count".equals(keyword)) {
-            String setuCount = redisUtil.get(RedisUtil.BOT_SETU_COUNT);
+            String setuCount = redisUtil.get(BOT_SETU_COUNT);
 
             return builder.text("今天咱发了").text(setuCount).text("份色图，要节制啊QwQ");
         }
@@ -170,15 +170,14 @@ public class SeTu extends BotPlugin {
     }
 
     private void setuCount() {
-        redisUtil.incrBy(RedisUtil.BOT_SETU_COUNT, 1);
+        redisUtil.incrBy(BOT_SETU_COUNT, 1);
 
         Calendar instance = Calendar.getInstance();
         instance.set(Calendar.HOUR_OF_DAY, 23);
         instance.set(Calendar.MINUTE, 59);
         instance.set(Calendar.SECOND, 58);
-        redisUtil.expireAt(RedisUtil.BOT_SETU_COUNT, instance.getTime());
+        redisUtil.expireAt(BOT_SETU_COUNT, instance.getTime());
     }
-
 
 
 }

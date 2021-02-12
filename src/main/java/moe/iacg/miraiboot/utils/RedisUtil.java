@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -21,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
 
     public static final String BOT_IMAGE_MD5 = "bot:image:md5:";
-    public static final String BOT_SETU_COUNT = "bot:setu:count";
 
     private StringRedisTemplate redisTemplate;
 
