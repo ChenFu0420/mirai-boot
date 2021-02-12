@@ -18,29 +18,30 @@ public class Reread extends BotPlugin {
     @Autowired
     RedisUtil redisUtil;
 
-    private static final String REREAD_RECORD_KEY = "bot:rereadRecord";
-    private static final String REREAD_RECORD_KEY_OTHER = "bot:rereadRecordOther";
+    private static final String REREAD_RECORD_KEY = "bot:rereadRecord:";
+    private static final String REREAD_RECORD_KEY_OTHER = "bot:rereadRecordOther:";
 
     @Override
 
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
         Msg builder = Msg.builder();
         String rawMessage = event.getRawMessage();
-
-        String lastMessage = redisUtil.get(REREAD_RECORD_KEY);
-        String lastRereadMessage = redisUtil.get(REREAD_RECORD_KEY_OTHER);
+        long groupId = event.getGroupId();
+        String lastMessage = redisUtil.get(REREAD_RECORD_KEY + groupId);
+        String lastRereadMessage = redisUtil.get(REREAD_RECORD_KEY_OTHER + groupId);
 
         boolean eqLastMsg = StringUtils.isNotBlank(lastMessage) && lastMessage.equals(rawMessage);
-        boolean eqLastRereadMsg = StringUtils.isNotBlank(lastMessage) &&!lastRereadMessage.equals(rawMessage);
+        if (StringUtils.isBlank(lastRereadMessage)) {
+            lastRereadMessage = "null";
+        }
 
-
-        if ((eqLastMsg && eqLastRereadMsg)) {
+        if (eqLastMsg && !lastRereadMessage.equals(rawMessage)) {
             builder.setMessageChain(event.getMessageList());
-            redisUtil.set(REREAD_RECORD_KEY_OTHER, rawMessage);
+            redisUtil.set(REREAD_RECORD_KEY_OTHER + groupId, rawMessage);
 
-            builder.sendToGroup(bot, event.getGroupId());
+            builder.sendToGroup(bot, groupId);
         } else {
-            redisUtil.set(REREAD_RECORD_KEY, rawMessage);
+            redisUtil.set(REREAD_RECORD_KEY + groupId, rawMessage);
         }
         return MESSAGE_IGNORE;
     }
