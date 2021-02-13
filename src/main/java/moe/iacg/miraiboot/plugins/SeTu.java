@@ -81,7 +81,10 @@ public class SeTu extends BotPlugin {
 
         Result parse = ToAnalysis.parse(message);
         String chineseNumber = ReUtil.get(",(.*)\\/mq", parse.toString(), 1);
-        List<String> keywords = parse.getTerms().stream().map(Term::toString).filter(str -> str.contains("/n")||str.contains("/en")).collect(Collectors.toList());
+        List<String> keywords = parse.getTerms()
+                .stream().map(Term::toString)
+                .filter(str -> str.contains("/n") || str.contains("/en"))
+                .collect(Collectors.toList());
 
         if (StringUtils.isNotEmpty(chineseNumber)) {
             chineseNumber = chineseNumber.substring(0, chineseNumber.length() - 1);
@@ -100,7 +103,7 @@ public class SeTu extends BotPlugin {
                 builder.image(getSeTuApi(keyword, 0));
             }
             return builder;
-        }else {
+        } else {
             keyword = keywords.get(1).split("/")[0];
         }
 
@@ -126,7 +129,7 @@ public class SeTu extends BotPlugin {
         if (!StringUtils.isEmpty(keyword)) {
             requestData.put("keyword", keyword);
         }
-//        requestData.put("r18", null);
+        requestData.put("r18", r18);
 
         var result = loliconProxyURL + ReUtil.get("href=\"(.*)\">",
                 HttpUtil.get(loliconProxyURL + "/lolicon", requestData), 1);
