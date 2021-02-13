@@ -2,6 +2,7 @@ package moe.iacg.miraiboot.plugins;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.utils.RedisUtil;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
@@ -11,6 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 public class Reread extends BotPlugin {
@@ -18,8 +24,8 @@ public class Reread extends BotPlugin {
     @Autowired
     RedisUtil redisUtil;
 
-    private static final String REREAD_RECORD_KEY = "bot:rereadRecord:";
-    private static final String REREAD_RECORD_KEY_OTHER = "bot:rereadRecordOther:";
+    private static final String REREAD_RECORD_GROUP = "bot:rereadRecord:";
+    private static final String REREAD_RECORDED_GROUP = "bot:rereadRecorded:";
 
     @Override
 
@@ -27,8 +33,15 @@ public class Reread extends BotPlugin {
         Msg builder = Msg.builder();
         String rawMessage = event.getRawMessage();
         long groupId = event.getGroupId();
-        String lastMessage = redisUtil.get(REREAD_RECORD_KEY + groupId);
-        String lastRereadMessage = redisUtil.get(REREAD_RECORD_KEY_OTHER + groupId);
+
+        List<String> allCommand = Arrays.stream(Commands.values()).map(Commands::getCommand).collect(Collectors.toList());
+        boolean isCommand = allCommand.stream().anyMatch(rawMessage::contains);
+        if (isCommand) {
+            return MESSAGE_IGNORE;
+        }
+
+        String lastMessage = redisUtil.get(REREAD_RECORD_GROUP + groupId);
+        String lastRereadMessage = redisUtil.get(REREAD_RECORDED_GROUP + groupId);
 
         boolean eqLastMsg = StringUtils.isNotBlank(lastMessage) && lastMessage.equals(rawMessage);
         if (StringUtils.isBlank(lastRereadMessage)) {
@@ -37,11 +50,13 @@ public class Reread extends BotPlugin {
 
         if (eqLastMsg && !lastRereadMessage.equals(rawMessage)) {
             builder.setMessageChain(event.getMessageList());
-            redisUtil.set(REREAD_RECORD_KEY_OTHER + groupId, rawMessage);
-
+            redisUtil.set(REREAD_RECORDED_GROUP + groupId, rawMessage);
+            redisUtil.expire(REREAD_RECORDED_GROUP + groupId, 1, TimeUnit.DAYS);
             builder.sendToGroup(bot, groupId);
         } else {
-            redisUtil.set(REREAD_RECORD_KEY + groupId, rawMessage);
+            redisUtil.set(REREAD_RECORD_GROUP + groupId, rawMessage);
+            redisUtil.expire(REREAD_RECORD_GROUP + groupId, 1, TimeUnit.DAYS);
+
         }
         return MESSAGE_IGNORE;
     }

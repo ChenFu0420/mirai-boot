@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Component
@@ -78,6 +79,35 @@ public class BotUtils {
     public static boolean hasGroupAdmin(OnebotEvent.GroupMessageEvent event) {
         String role = event.getSender().getRole();
         return (role.equals(SenderRoleConstant.ADMIN) || role.equals(SenderRoleConstant.OWNER));
+    }
+
+    /**
+     * 中文数字转为阿拉伯数字
+     * @param zhNumStr 中文数字
+     * @return 阿拉伯数字
+     */
+    public static int zh2arbaNum(String zhNumStr) {
+        Stack<Integer> stack = new Stack<>();
+        String numStr = "一二三四五六七八九";
+        String unitStr = "十百千万亿";
+
+        String[] ssArr = zhNumStr.split("");
+        for (String e : ssArr ) {
+            int numIndex = numStr.indexOf(e);
+            int unitIndex = unitStr.indexOf(e);
+            if (numIndex != -1 ) {
+                stack.push(numIndex + 1);
+            } else if (unitIndex != -1) {
+                int unitNum = (int)Math.pow(10, unitIndex + 1);
+                if (stack.isEmpty()) {
+                    stack.push(unitNum);
+                } else {
+                    stack.push( stack.pop() * unitNum);
+                }
+            }
+        };
+
+        return stack.stream().mapToInt(s-> s).sum();
     }
 
     /**

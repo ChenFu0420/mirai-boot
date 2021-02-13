@@ -14,12 +14,16 @@ import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
+import org.ansj.domain.Result;
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.ToAnalysis;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Ghost
@@ -43,16 +47,16 @@ public class SeTu extends BotPlugin {
     private String seTuAuthGroups;
     public static final String BOT_SETU_COUNT = "bot:setu:count";
 
+
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
         String[] groups = seTuAuthGroups.split(",");
         boolean hasGroup = Arrays.stream(groups).anyMatch(group -> group.equals(String.valueOf(event.getGroupId())));
-
         if (hasGroup) {
             return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
 
         } else {
-            return BotUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群没有使用该功能权限，请寻找管理员申请"));
+            return BotUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群不能开车，请找管理员考取驾照吧"));
         }
 
     }
@@ -74,40 +78,37 @@ public class SeTu extends BotPlugin {
             }
         }
 
+
+        Result parse = ToAnalysis.parse(message);
+        String chineseNumber = ReUtil.get(",(.*)\\/mq", parse.toString(), 1);
+        List<String> keywords = parse.getTerms().stream().map(Term::toString).filter(str -> str.contains("/n")||str.contains("/en")).collect(Collectors.toList());
+
+        keyword = keywords.get(1).split("/")[0];
+        if (StringUtils.isNotEmpty(chineseNumber)) {
+            chineseNumber = chineseNumber.substring(0, chineseNumber.length() - 1);
+            int number;
+            try {
+                number = Integer.valueOf(chineseNumber);
+            } catch (NumberFormatException e) {
+                number = BotUtils.zh2arbaNum(chineseNumber);
+            }
+
+            if (number > 16) {
+                builder.text("差不多得了").face(1);
+                return builder;
+            }
+            for (int i = 0; i < number; i++) {
+                builder.image(getSeTuApi(keyword, 0));
+            }
+            return builder;
+        }
+
         if ("count".equals(keyword)) {
             String setuCount = redisUtil.get(BOT_SETU_COUNT);
-
             return builder.text("今天咱发了").text(setuCount).text("份色图，要节制啊QwQ");
         }
-        builder.image(getSeTuApi(keyword, 1));
 
-//        SeTuResponseModel seTuResponseModel = seTuApi(keyword, 1, 1);
-//
-//        if (seTuResponseModel == null) {
-//            builder.text("调用色图服务出错");
-//            return builder;
-//        }
-//        if (seTuResponseModel.getCode() != 0) {
-//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_NOT_FOUND) {
-//                builder.text("找不到符合关键字的色图");
-//            }
-//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_FORBIDDEN) {
-//                builder.text("由于不规范的操作而被拒绝调用");
-//            }
-//            if (seTuResponseModel.getCode() == HttpStatus.HTTP_UNAUTHORIZED) {
-//                builder.text("APIKEY 不存在或被封禁");
-//            }
-//            if (seTuResponseModel.getCode() == 429) {
-//                builder.text("达到调用额度限制");
-//            }
-//            if (seTuResponseModel.getCode() == -1) {
-//                builder.text("内部错误，请向 i@loli.best 反馈");
-//            }
-//            return builder;
-//        }
-//        SeTuResponseModel.Setu firstSeTu = seTuResponseModel.getData().stream().findFirst().get();
-//        builder.image(firstSeTu.getUrl());
-//        builder.text("作品名称：").text(firstSeTu.getTitle()).text("\n画师：").text(firstSeTu.getAuthor());
+        builder.image(getSeTuApi(keyword, 1));
         return builder;
     }
 
@@ -124,9 +125,11 @@ public class SeTu extends BotPlugin {
         if (!StringUtils.isEmpty(keyword)) {
             requestData.put("keyword", keyword);
         }
-        requestData.put("r18", r18);
-        return loliconProxyURL + ReUtil.get("href=\"(.*)\">",
+//        requestData.put("r18", null);
+
+        var result = loliconProxyURL + ReUtil.get("href=\"(.*)\">",
                 HttpUtil.get(loliconProxyURL + "/lolicon", requestData), 1);
+        return result;
     }
 
     /**

@@ -63,11 +63,11 @@
 
     <dependencies>
 <!--        分词-->
-<!--        <dependency>-->
-<!--            <groupId>org.ansj</groupId>-->
-<!--            <artifactId>ansj_seg</artifactId>-->
-<!--            <version>${ansj_seg.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.ansj</groupId>
+            <artifactId>ansj_seg</artifactId>
+            <version>${ansj_seg.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.github.nintha</groupId>
             <artifactId>webp-imageio-core</artifactId>
