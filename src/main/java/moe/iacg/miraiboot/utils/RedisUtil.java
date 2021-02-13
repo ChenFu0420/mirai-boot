@@ -1,10 +1,12 @@
 package moe.iacg.miraiboot.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -17,10 +19,12 @@ import java.util.concurrent.TimeUnit;
  * @version 1.1 (GitHub文档: https://github.com/whvcse/RedisUtil )
  * @date 2018-02-24 下午03:09:50
  */
+@Component
 public class RedisUtil {
 
     public static final String BOT_IMAGE_MD5 = "bot:image:md5:";
 
+    @Autowired
     private StringRedisTemplate redisTemplate;
 
     public StringRedisTemplate getRedisTemplate() {

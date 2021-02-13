@@ -27,6 +27,9 @@ public class Bangumi extends BotPlugin {
     @Autowired
     BangumiStatusService bangumiStatusService;
 
+    @Autowired
+    BotUtils botUtils;
+
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
 
@@ -51,7 +54,7 @@ public class Bangumi extends BotPlugin {
                 bangumiStatusService.save(bangumiStatus);
 
                 messageBuilder.text("你已经成功订阅新番更新提醒，新番更新的时候会").at(qq).text("你哈");
-                return BotUtils.sendMessage(bot, event, messageBuilder);
+                return botUtils.sendMessage(bot, event, messageBuilder);
             }
             if (bangumiStatus.getBangumiFlag() == 1) {
 
@@ -63,7 +66,7 @@ public class Bangumi extends BotPlugin {
                 bangumiStatusService.update(bangumiStatus);
                 messageBuilder.text("再次订阅了新番更新提醒，新番更新的时候会").at(qq).text("你哈");
             }
-            return BotUtils.sendMessage(bot, event, messageBuilder);
+            return botUtils.sendMessage(bot, event, messageBuilder);
         }
 
         if (acceptMessage.startsWith("rm ")) {
@@ -83,9 +86,9 @@ public class Bangumi extends BotPlugin {
                 bangumiStatusService.update(bangumiStatus);
             }
             messageBuilder.text("已经移除番号：" + excludeBGMIds.toString() + "订阅。");
-            return BotUtils.sendMessage(bot, event, messageBuilder);
+            return botUtils.sendMessage(bot, event, messageBuilder);
         }
         messageBuilder.text("你没有订阅或错误使用命令无法进行通知番剧过滤");
-        return BotUtils.sendMessage(bot, event, messageBuilder);
+        return botUtils.sendMessage(bot, event, messageBuilder);
     }
 }

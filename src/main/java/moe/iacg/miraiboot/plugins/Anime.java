@@ -13,6 +13,7 @@ import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotBase;
 import onebot.OnebotEvent;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -21,20 +22,24 @@ import org.springframework.util.CollectionUtils;
 @CommandPrefix(command = Commands.ANIME)
 public class Anime extends BotPlugin {
 
+    @Autowired
+    BotUtils botUtils;
+
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, queryAnime(event.getMessage(1)));
+        return botUtils.sendMessage(bot, event, queryAnime(event.getMessage(1)));
 
     }
 
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, queryAnime(event.getMessage(1)));
+        return botUtils.sendMessage(bot, event, queryAnime(event.getMessage(1)));
 
     }
+
     private Msg queryAnime(OnebotBase.Message message) {
         Msg builder = Msg.builder();
-        String result = HttpUtil.get("https://trace.moe/api/search?url=" +message.getDataMap().get("url"));
+        String result = HttpUtil.get("https://trace.moe/api/search?url=" + message.getDataMap().get("url"));
         if ("\"Error reading imagenull\"".equals(result)) {
             builder.text("你发送的图片过大或是GIF导致搜索失败:P");
             return builder;

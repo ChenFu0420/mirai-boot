@@ -18,6 +18,7 @@ import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -31,6 +32,9 @@ public class StartServer extends BotPlugin {
     private String mcsmAdminKey;
     @NacosValue("${mcsm.api.url}")
     private String mcsmApiURL;
+
+    @Autowired
+    private BotUtils botUtils;
 
     @Override
     @SneakyThrows
@@ -59,7 +63,7 @@ public class StartServer extends BotPlugin {
                 if (StringUtils.isBlank(secondCommand)) {
                     tmpMCSMCommand = STATUS;
                 } else {
-                    return BotUtils.sendMessage(bot, event, builder.text("您输入的命令有误，请检查格式后重新输入"));
+                    return botUtils.sendMessage(bot, event, builder.text("您输入的命令有误，请检查格式后重新输入"));
 
                 }
                 break;
@@ -69,7 +73,7 @@ public class StartServer extends BotPlugin {
         String data = request.execute().body();
         if (data.equals("null")) {
             builder.text("查询服务端不存在，请联系管理员绑定");
-            return BotUtils.sendMessage(bot, event, builder);
+            return botUtils.sendMessage(bot, event, builder);
         }
 
 
@@ -98,13 +102,13 @@ public class StartServer extends BotPlugin {
             }
         } else if (STATUS.equals(tmpMCSMCommand)) {
             builder.text(data);
-            return BotUtils.sendMessage(bot, event, builder);
+            return botUtils.sendMessage(bot, event, builder);
         } else {
             builder.text("您不是管理员，无权启动服务器，请找群管理启动哈~");
         }
 
 
-        return BotUtils.sendMessage(bot, event, builder);
+        return botUtils.sendMessage(bot, event, builder);
 
 
     }

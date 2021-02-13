@@ -1,26 +1,22 @@
 package moe.iacg.miraiboot.config;
 
-import com.alibaba.nacos.api.config.annotation.NacosValue;
-import moe.iacg.miraiboot.utils.RedisUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import redis.clients.jedis.JedisPoolConfig;
 
-@Configuration
+//@Configuration
 public class RedisConfig {
 
-    @NacosValue("${redis.hostname}")
+//    @NacosValue("${redis.hostname}")
     private String hostname;
-    @NacosValue("${redis.password}")
+//    @NacosValue("${redis.password}")
     private String password;
 
-    @NacosValue("${redis.port}")
+//    @NacosValue("${redis.port}")
     private Integer port;
 
 
-    @Bean
+//    @Bean
     public JedisPoolConfig poolConfig() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(300);
@@ -30,7 +26,7 @@ public class RedisConfig {
         return jedisPoolConfig;
     }
 
-    @Bean
+//    @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(poolConfig());
         jedisConnectionFactory.setHostName(hostname);
@@ -41,18 +37,18 @@ public class RedisConfig {
 
 
 
-    @Bean
+//    @Bean
     public StringRedisTemplate redisTemplate() {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(jedisConnectionFactory());
         return stringRedisTemplate;
     }
 
-    @Bean
-    public RedisUtil redisUtil() {
-        RedisUtil redisUtil = new RedisUtil();
-        redisUtil.setRedisTemplate(redisTemplate());
-        return redisUtil;
-    }
+//    @Bean
+//    public RedisUtil redisUtil() {
+//        RedisUtil redisUtil = new RedisUtil();
+//        redisUtil.setRedisTemplate(redisTemplate());
+//        return redisUtil;
+//    }
 
 }

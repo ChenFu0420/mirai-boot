@@ -21,14 +21,17 @@ public class Help extends BotPlugin {
     @Autowired
     BotProperties botProperties;
 
+    @Autowired
+    BotUtils botUtils;
+
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, help());
+        return botUtils.sendMessage(bot, event, help());
     }
 
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, help());
+        return botUtils.sendMessage(bot, event, help());
     }
 
 

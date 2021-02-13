@@ -10,6 +10,7 @@ import net.lz1998.pbbot.bot.BotPlugin;
 import net.lz1998.pbbot.utils.Msg;
 import onebot.OnebotEvent;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -23,11 +24,13 @@ import java.util.List;
 @CommandPrefix(command = Commands.YUANSHEN)
 public class Genshin extends BotPlugin {
 
+    @Autowired
+    BotUtils botUtils;
     private static final String SP = "sp";
 
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, genshin(event));
+        return botUtils.sendMessage(bot, event, genshin(event));
     }
 
 

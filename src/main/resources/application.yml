@@ -25,5 +25,3 @@ nacos:
       enable: true
     auto-refresh: true
     type: properties
-    username: nacos
-    password: sdfg84Nacos

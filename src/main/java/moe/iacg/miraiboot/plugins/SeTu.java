@@ -7,6 +7,7 @@ import com.alibaba.nacos.api.config.annotation.NacosValue;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
 import moe.iacg.miraiboot.enums.Commands;
+import moe.iacg.miraiboot.limit.RedisRaterLimiter;
 import moe.iacg.miraiboot.model.SeTuResponseModel;
 import moe.iacg.miraiboot.utils.BotUtils;
 import moe.iacg.miraiboot.utils.RedisUtil;
@@ -37,6 +38,9 @@ public class SeTu extends BotPlugin {
     RedisUtil redisUtil;
     private int tmpNextKeyIndex = 0;
 
+    @Autowired
+    RedisRaterLimiter redisRaterLimiter;
+
     @NacosValue("${setu.api.key}")
     private String seTuAPIKeys;
 
@@ -45,6 +49,9 @@ public class SeTu extends BotPlugin {
 
     @NacosValue("${setu.auth.groups}")
     private String seTuAuthGroups;
+
+    @Autowired
+    private BotUtils botUtils;
     public static final String BOT_SETU_COUNT = "bot:setu:count";
 
 
@@ -53,20 +60,21 @@ public class SeTu extends BotPlugin {
         String[] groups = seTuAuthGroups.split(",");
         boolean hasGroup = Arrays.stream(groups).anyMatch(group -> group.equals(String.valueOf(event.getGroupId())));
         if (hasGroup) {
-            return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
+            return botUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
 
         } else {
-            return BotUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群不能开车，请找管理员考取驾照吧"));
+            return botUtils.sendMessage(bot, event, Msg.builder().text("您的QQ群不能开车，请找管理员考取驾照吧"));
         }
 
     }
 
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
-        return BotUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
+        return botUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
 
     private Msg sendSeTu(String message) {
+
 
         String keyword = BotUtils.removeCommandPrefix(Commands.SETU.getCommand(), message);
         Msg builder = Msg.builder();
@@ -77,6 +85,7 @@ public class SeTu extends BotPlugin {
                 break;
             }
         }
+
 
 
         Result parse = ToAnalysis.parse(message);
@@ -95,7 +104,7 @@ public class SeTu extends BotPlugin {
                 number = BotUtils.zh2arbaNum(chineseNumber);
             }
 
-            if (number > 16) {
+            if (number > 12) {
                 builder.text("差不多得了").face(1);
                 return builder;
             }
@@ -104,7 +113,9 @@ public class SeTu extends BotPlugin {
             }
             return builder;
         } else {
-            keyword = keywords.get(1).split("/")[0];
+            if (keywords.size() > 1) {
+                keyword = keywords.get(1).split("/")[0];
+            }
         }
 
         if ("count".equals(keyword)) {

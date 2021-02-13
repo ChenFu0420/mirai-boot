@@ -8,6 +8,7 @@ import moe.iacg.miraiboot.constants.MsgDataConstant;
 import moe.iacg.miraiboot.constants.MsgTypeConstant;
 import moe.iacg.miraiboot.constants.SenderRoleConstant;
 import moe.iacg.miraiboot.enums.FileType;
+import moe.iacg.miraiboot.limit.RedisRaterLimiter;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotContainer;
 import net.lz1998.pbbot.bot.BotPlugin;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -31,6 +33,9 @@ public class BotUtils {
 
     @Autowired
     BotContainer botContainer;
+
+    @Autowired
+    RedisRaterLimiter redisRaterLimiter;
 
     public Bot getFirstBot() {
         return botContainer.getBots().values().stream().findFirst().get();
@@ -60,17 +65,37 @@ public class BotUtils {
         return secondContent;
     }
 
-    public static <T> int sendMessage(Bot bot, T event, Msg msg) {
+
+    public <T> int sendMessage(Bot bot, T event, Msg msg) {
+
+        String userId = "";
 
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
             var eventPrivate = (OnebotEvent.PrivateMessageEvent) event;
+            userId = String.valueOf(eventPrivate.getUserId());
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 3000L);
+
+            if (!hasAcq) {
+                msg.setMessageChain(new ArrayList<>());
+                msg.text("男人不可以这么快！").face(1);
+            }
+
             bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
+
+
         }
 
         if (event instanceof OnebotEvent.GroupMessageEvent) {
             var eventGroup = (OnebotEvent.GroupMessageEvent) event;
+            userId = String.valueOf(eventGroup.getUserId());
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 3000L);
+            if (!hasAcq) {
+                msg.setMessageChain(new ArrayList<>());
+                msg.text("男人不可以这么快！").face(1).at(Integer.parseInt(userId));
+            }
             bot.sendGroupMsg(eventGroup.getGroupId(),
                     msg, false);
+
         }
 
         return BotPlugin.MESSAGE_BLOCK;
@@ -83,6 +108,7 @@ public class BotUtils {
 
     /**
      * 中文数字转为阿拉伯数字
+     *
      * @param zhNumStr 中文数字
      * @return 阿拉伯数字
      */
@@ -92,22 +118,23 @@ public class BotUtils {
         String unitStr = "十百千万亿";
 
         String[] ssArr = zhNumStr.split("");
-        for (String e : ssArr ) {
+        for (String e : ssArr) {
             int numIndex = numStr.indexOf(e);
             int unitIndex = unitStr.indexOf(e);
-            if (numIndex != -1 ) {
+            if (numIndex != -1) {
                 stack.push(numIndex + 1);
             } else if (unitIndex != -1) {
-                int unitNum = (int)Math.pow(10, unitIndex + 1);
+                int unitNum = (int) Math.pow(10, unitIndex + 1);
                 if (stack.isEmpty()) {
                     stack.push(unitNum);
                 } else {
-                    stack.push( stack.pop() * unitNum);
+                    stack.push(stack.pop() * unitNum);
                 }
             }
-        };
+        }
+        ;
 
-        return stack.stream().mapToInt(s-> s).sum();
+        return stack.stream().mapToInt(s -> s).sum();
     }
 
     /**
