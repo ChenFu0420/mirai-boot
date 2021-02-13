@@ -83,12 +83,11 @@ public class SeTu extends BotPlugin {
         String chineseNumber = ReUtil.get(",(.*)\\/mq", parse.toString(), 1);
         List<String> keywords = parse.getTerms().stream().map(Term::toString).filter(str -> str.contains("/n")||str.contains("/en")).collect(Collectors.toList());
 
-        keyword = keywords.get(1).split("/")[0];
         if (StringUtils.isNotEmpty(chineseNumber)) {
             chineseNumber = chineseNumber.substring(0, chineseNumber.length() - 1);
             int number;
             try {
-                number = Integer.valueOf(chineseNumber);
+                number = Integer.parseInt(chineseNumber);
             } catch (NumberFormatException e) {
                 number = BotUtils.zh2arbaNum(chineseNumber);
             }
@@ -101,6 +100,8 @@ public class SeTu extends BotPlugin {
                 builder.image(getSeTuApi(keyword, 0));
             }
             return builder;
+        }else {
+            keyword = keywords.get(1).split("/")[0];
         }
 
         if ("count".equals(keyword)) {
