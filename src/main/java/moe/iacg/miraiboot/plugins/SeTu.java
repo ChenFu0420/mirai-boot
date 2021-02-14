@@ -1,9 +1,11 @@
 package moe.iacg.miraiboot.plugins;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
 import moe.iacg.miraiboot.enums.Commands;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -73,6 +76,7 @@ public class SeTu extends BotPlugin {
         return botUtils.sendMessage(bot, event, sendSeTu(event.getRawMessage()));
     }
 
+    @SneakyThrows
     private Msg sendSeTu(String message) {
 
 
@@ -85,7 +89,6 @@ public class SeTu extends BotPlugin {
                 break;
             }
         }
-
 
 
         Result parse = ToAnalysis.parse(message);
@@ -108,10 +111,9 @@ public class SeTu extends BotPlugin {
                 builder.text("差不多得了").face(1);
                 return builder;
             }
-            for (int i = 0; i < number; i++) {
-                builder.image(getSeTuApi(keyword, 0));
-            }
-            return builder;
+
+            return batchGetSeTuApi(number);
+
         } else {
             if (keywords.size() > 1) {
                 keyword = keywords.get(1).split("/")[0];
@@ -145,6 +147,21 @@ public class SeTu extends BotPlugin {
         var result = loliconProxyURL + ReUtil.get("href=\"(.*)\">",
                 HttpUtil.get(loliconProxyURL + "/lolicon", requestData), 1);
         return result;
+    }
+
+    @SneakyThrows
+    public Msg batchGetSeTuApi(int size) {
+        Msg builder = Msg.builder();
+        List<Future<String>> fs = new ArrayList<>(size);
+        List<String> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            Future<String> seTuURLFuture = ThreadUtil.execAsync(() -> getSeTuApi(null, 0));
+            fs.add(seTuURLFuture);
+        }
+        for (Future<String> f : fs) {
+            builder.image(f.get());
+        }
+        return builder;
     }
 
     /**

@@ -77,7 +77,7 @@ public class BotUtils {
 
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
-                msg.text("男人不可以这么快！").face(1);
+                msg.text("男人不可以这么快！");
             }
 
             bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
@@ -88,10 +88,10 @@ public class BotUtils {
         if (event instanceof OnebotEvent.GroupMessageEvent) {
             var eventGroup = (OnebotEvent.GroupMessageEvent) event;
             userId = String.valueOf(eventGroup.getUserId());
-            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 3000L);
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 6000L);
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
-                msg.text("男人不可以这么快！").face(1).at(Integer.parseInt(userId));
+                msg.text("男人不可以这么快！").at(Integer.parseInt(userId));
             }
             bot.sendGroupMsg(eventGroup.getGroupId(),
                     msg, false);
@@ -114,7 +114,7 @@ public class BotUtils {
      */
     public static int zh2arbaNum(String zhNumStr) {
         Stack<Integer> stack = new Stack<>();
-        String numStr = "一二三四五六七八九";
+        String numStr = "一两三四五六七八九";
         String unitStr = "十百千万亿";
 
         String[] ssArr = zhNumStr.split("");

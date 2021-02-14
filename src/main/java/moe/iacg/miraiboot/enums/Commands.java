@@ -16,6 +16,7 @@ public enum Commands {
             " -/ys sp 32-80 【(当前体力)-(目标体力)】"
     ),
     HELP("help", "命令帮助"),
+    DONATE("donate", "云要饭"),
 
     IOT("iot", "基于mqtt的物联网功能 （老王自家使用）"),
     SWITCH("iot", "基于mqtt的物联网功能 （老王自家使用）"),
