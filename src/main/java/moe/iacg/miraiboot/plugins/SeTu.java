@@ -1,6 +1,5 @@
 package moe.iacg.miraiboot.plugins;
 
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
@@ -26,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -107,7 +106,7 @@ public class SeTu extends BotPlugin {
                 number = BotUtils.zh2arbaNum(chineseNumber);
             }
 
-            if (number > 12) {
+            if (number > 11) {
                 builder.text("差不多得了").face(1);
                 return builder;
             }
@@ -124,8 +123,12 @@ public class SeTu extends BotPlugin {
             String setuCount = redisUtil.get(BOT_SETU_COUNT);
             return builder.text("今天咱发了").text(setuCount).text("份色图，要节制啊QwQ");
         }
-
-        builder.image(getSeTuApi(keyword, 1));
+        String seTuApi = getSeTuApi(keyword, 1);
+        if (seTuApi.contains("null")) {
+            builder.text("没有这种涩图，可能你的性癖太怪了:P");
+            return builder;
+        }
+        builder.image(seTuApi);
         return builder;
     }
 
@@ -152,14 +155,19 @@ public class SeTu extends BotPlugin {
     @SneakyThrows
     public Msg batchGetSeTuApi(int size) {
         Msg builder = Msg.builder();
-        List<Future<String>> fs = new ArrayList<>(size);
-        List<String> result = new ArrayList<>(size);
+        List<CompletableFuture<String>> futures = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            Future<String> seTuURLFuture = ThreadUtil.execAsync(() -> getSeTuApi(null, 0));
-            fs.add(seTuURLFuture);
+            CompletableFuture<String> seTuFuture = CompletableFuture.supplyAsync(() -> getSeTuApi(null, 0));
+            futures.add(seTuFuture);
         }
-        for (Future<String> f : fs) {
-            builder.image(f.get());
+        CompletableFuture<Void> cfFetch = CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()]));
+
+        CompletableFuture<List<String>> listCompletableFuture = cfFetch.thenApply(future ->
+                futures.stream()
+                        .map(completableFuture -> completableFuture.join()).collect(Collectors.toList()));
+
+        for (String url : listCompletableFuture.get()) {
+            builder.image(url);
         }
         return builder;
     }

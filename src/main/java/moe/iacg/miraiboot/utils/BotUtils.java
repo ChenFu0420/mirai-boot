@@ -68,16 +68,16 @@ public class BotUtils {
 
     public <T> int sendMessage(Bot bot, T event, Msg msg) {
 
-        String userId = "";
+        long userId;
 
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
             var eventPrivate = (OnebotEvent.PrivateMessageEvent) event;
-            userId = String.valueOf(eventPrivate.getUserId());
-            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 3000L);
+            userId = eventPrivate.getUserId();
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(String.valueOf(userId), 1L, 3000L);
 
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
-                msg.text("男人不可以这么快！");
+                msg.text("你发送的消息太快了！休息一下？快男？");
             }
 
             bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
@@ -87,11 +87,11 @@ public class BotUtils {
 
         if (event instanceof OnebotEvent.GroupMessageEvent) {
             var eventGroup = (OnebotEvent.GroupMessageEvent) event;
-            userId = String.valueOf(eventGroup.getUserId());
-            Boolean hasAcq = redisRaterLimiter.acquireByRedis(userId, 1L, 6000L);
+            userId = eventGroup.getUserId();
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(String.valueOf(userId), 1L, 5000L);
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
-                msg.text("男人不可以这么快！").at(Integer.parseInt(userId));
+                msg.text("你发送的消息太快了！休息一下？快男？").at(userId);
             }
             bot.sendGroupMsg(eventGroup.getGroupId(),
                     msg, false);
