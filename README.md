@@ -1,8 +1,5 @@
 # Mirai-boot
-
-基于[Go-Mirai-Client](https://github.com/ProtobufBot/Go-Mirai-Client)
-与[pbbot-spring-boot-starter](https://github.com/ProtobufBot/pbbot-spring-boot-starter)
-开发的QQBot.
+提供给QQ群娱乐查询或管理MC服务器的功能性QQBot
 
 ## 环境需求
 1. Redis
@@ -11,15 +8,21 @@
 4. JDK11
 
 ### 已功能实现
+- [x] 色图搜索功能
+- [x] 语义批量色图+redis令牌桶限流
+- [x] 原神体力计算器
+- [x] 新番更新订阅提醒
+- [x] 以图搜番
+- [x] Telegram群与QQ群消息互通
+- [x] 复读姬
+- [x] MCSM远程服务端控制
+- [x] Bot功能更新提示通知(GithubWebHook)
 
-1. 色图搜索
-2. 原神体力计算器
-3. 新番更新提醒
-4. Telegram群与QQ群消息互通
-
-
-### 其他业务相关实现
-1. 命令注解开发完成
-
-**//TODO**
 ...
+
+  
+# Credits
+* [setu-api](https://api.lolicon.app/#/setu)
+* [trace.moe](https://trace.moe/)
+* [Go-Mirai-Client](https://github.com/ProtobufBot/Go-Mirai-Client)
+* [MCSManager](https://github.com/Suwings/MCSManager)
