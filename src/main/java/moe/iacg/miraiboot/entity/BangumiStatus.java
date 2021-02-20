@@ -9,10 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Ghost
@@ -30,8 +27,9 @@ import javax.persistence.Table;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 public class BangumiStatus {
 
-    @EmbeddedId
-    private BangumiStatusKey id;
+//    @EmbeddedId
+    @Id
+    private Long qq;
     private Integer bangumiFlag;
     private String bangumiExclude;
 }

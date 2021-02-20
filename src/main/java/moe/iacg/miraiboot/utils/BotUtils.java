@@ -202,6 +202,10 @@ public class BotUtils {
         getFirstBot().sendGroupMsg(groupId, msg, false);
         return BotPlugin.MESSAGE_BLOCK;
     }
+    public int sendPrivateMsg(Long qq, Msg msg) {
+        getFirstBot().sendPrivateMsg(qq, msg, false);
+        return BotPlugin.MESSAGE_BLOCK;
+    }
 
     public String getFileSuffix(String url) {
 

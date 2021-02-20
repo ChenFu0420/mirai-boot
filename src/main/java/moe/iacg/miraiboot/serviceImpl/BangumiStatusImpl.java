@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.base.BaseDao;
 import moe.iacg.miraiboot.dao.BangumiStatusDao;
 import moe.iacg.miraiboot.entity.BangumiStatus;
-import moe.iacg.miraiboot.entity.BangumiStatusKey;
 import moe.iacg.miraiboot.service.BangumiStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class BangumiStatusImpl implements BangumiStatusService {
     private BangumiStatusDao bangumiStatusDao;
 
     @Override
-    public BaseDao<BangumiStatus, BangumiStatusKey> getRepository() {
+    public BaseDao<BangumiStatus, Long> getRepository() {
         return bangumiStatusDao;
     }
 

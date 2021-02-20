@@ -3,9 +3,8 @@ package moe.iacg.miraiboot.plugins;
 import cn.hutool.core.text.StrSpliter;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
-import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.entity.BangumiStatus;
-import moe.iacg.miraiboot.entity.BangumiStatusKey;
+import moe.iacg.miraiboot.enums.Commands;
 import moe.iacg.miraiboot.service.BangumiStatusService;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.bot.Bot;
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -31,40 +30,31 @@ public class Bangumi extends BotPlugin {
     BotUtils botUtils;
 
     @Override
-    public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
-
+    public int onPrivateMessage(@NotNull Bot bot, @NotNull OnebotEvent.PrivateMessageEvent event) {
 
         Msg messageBuilder = new Msg();
         long qq = event.getUserId();
-        long groupId = event.getGroupId();
-
-
-        var key = new BangumiStatusKey();
-
-        key.setQq(qq);
-        key.setQqGroup(groupId);
-        BangumiStatus bangumiStatus = bangumiStatusService.get(key);
+        BangumiStatus bangumiStatus = bangumiStatusService.get(qq);
         String acceptMessage = BotUtils.removeCommandPrefix(Commands.BANGUMI.getCommand(), event.getRawMessage());
-
 
         if (StringUtils.isEmpty(acceptMessage)) {
             if (bangumiStatus == null) {
                 bangumiStatus = new BangumiStatus();
-                bangumiStatus.setId(key).setBangumiFlag(1);
+                bangumiStatus.setQq(qq).setBangumiFlag(1);
                 bangumiStatusService.save(bangumiStatus);
 
-                messageBuilder.text("你已经成功订阅新番更新提醒，新番更新的时候会").at(qq).text("你哈");
+                messageBuilder.text("你已经成功订阅新番更新提醒");
                 return botUtils.sendMessage(bot, event, messageBuilder);
             }
             if (bangumiStatus.getBangumiFlag() == 1) {
 
-                bangumiStatus.setId(key).setBangumiFlag(0);
+                bangumiStatus.setQq(qq).setBangumiFlag(0);
                 bangumiStatusService.update(bangumiStatus);
                 messageBuilder.text("你已经取消订阅新番更新提醒");
             } else {
-                bangumiStatus.setId(key).setBangumiFlag(1);
+                bangumiStatus.setQq(qq).setBangumiFlag(1);
                 bangumiStatusService.update(bangumiStatus);
-                messageBuilder.text("再次订阅了新番更新提醒，新番更新的时候会").at(qq).text("你哈");
+                messageBuilder.text("再次订阅了新番更新提醒");
             }
             return botUtils.sendMessage(bot, event, messageBuilder);
         }
@@ -90,5 +80,12 @@ public class Bangumi extends BotPlugin {
         }
         messageBuilder.text("你没有订阅或错误使用命令无法进行通知番剧过滤");
         return botUtils.sendMessage(bot, event, messageBuilder);
+
+    }
+
+    @Override
+    public int onGroupMessage(@NotNull Bot bot, @NotNull OnebotEvent.GroupMessageEvent event) {
+
+      return  botUtils.sendMessage(bot,event,Msg.builder().text("此功能作为私聊使用，请添加我为好友吧😜"));
     }
 }
