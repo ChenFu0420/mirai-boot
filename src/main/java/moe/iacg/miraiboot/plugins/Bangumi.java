@@ -20,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@CommandPrefix(command = Commands.BANGUMI)
+@CommandPrefix(command = Commands.BGM)
 public class Bangumi extends BotPlugin {
 
     @Autowired
@@ -35,7 +35,7 @@ public class Bangumi extends BotPlugin {
         Msg messageBuilder = new Msg();
         long qq = event.getUserId();
         BangumiStatus bangumiStatus = bangumiStatusService.get(qq);
-        String acceptMessage = BotUtils.removeCommandPrefix(Commands.BANGUMI.getCommand(), event.getRawMessage());
+        String acceptMessage = BotUtils.removeCommandPrefix(Commands.BGM.getCommand(), event.getRawMessage());
 
         if (StringUtils.isEmpty(acceptMessage)) {
             if (bangumiStatus == null) {

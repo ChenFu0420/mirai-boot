@@ -4,6 +4,7 @@ spring:
       - moe.iacg.miraiboot.plugins.Help #
       - moe.iacg.miraiboot.plugins.SeTu #
       - moe.iacg.miraiboot.plugins.StartServer #
+      - moe.iacg.miraiboot.plugins.Watch #
       - moe.iacg.miraiboot.plugins.Anime #
       - moe.iacg.miraiboot.plugins.Bangumi #
       - moe.iacg.miraiboot.plugins.Genshin #

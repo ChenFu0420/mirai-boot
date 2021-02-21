@@ -78,26 +78,23 @@ public class BotUtils {
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
                 msg.text("你发送的消息太快了！休息一下？快男？");
+            }else {
+                bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
             }
-
-            bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
-
-
         }
 
         if (event instanceof OnebotEvent.GroupMessageEvent) {
             var eventGroup = (OnebotEvent.GroupMessageEvent) event;
             userId = eventGroup.getUserId();
-            Boolean hasAcq = redisRaterLimiter.acquireByRedis(String.valueOf(userId), 1L, 5000L);
+            Boolean hasAcq = redisRaterLimiter.acquireByRedis(String.valueOf(userId), 1L, 3000L);
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
                 msg.text("你发送的消息太快了！休息一下？快男？").at(userId);
+            }else {
+                bot.sendGroupMsg(eventGroup.getGroupId(),
+                        msg, false);
             }
-            bot.sendGroupMsg(eventGroup.getGroupId(),
-                    msg, false);
-
         }
-
         return BotPlugin.MESSAGE_BLOCK;
     }
 

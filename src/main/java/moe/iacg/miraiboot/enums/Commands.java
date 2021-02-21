@@ -21,13 +21,15 @@ public enum Commands {
     IOT("iot", "基于mqtt的物联网功能 （老王自家使用）"),
     SWITCH("iot", "基于mqtt的物联网功能 （老王自家使用）"),
 
-    BANGUMI("bangumi", "开启新番更新提醒(大陆未购买版权则不会提醒)，排除你不喜欢的新番如:/bangumi rm 240835"),
+    BGM("bgm", "开启新番更新提醒(大陆未购买版权则不会提醒)，排除你不喜欢的新番如:/bgm rm 240835"),
 
     SETU("setu", "涩图！可加关键字，r18五五开检索。如：/setu yjx4"),
 
     AMQ("amq", "到点了，网抑云开启 (AMQ <anti-motivational quotes>)"),
 
     MCSM("mcsm", "二级命令 status、start_server、stop_server"),
+
+    WATCH("watch", "谁在窥屏"),
 
     ANIME("anime", "以图搜番"),
 

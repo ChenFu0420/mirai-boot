@@ -29,7 +29,7 @@ public class BotScheduled {
     private static String lastQuarterBangumi;
 
     private static Map<String, List<BangumiList>> todayBGMForTime;
-    private static  List<BangumiStatus> byBangumiFlag;
+    private static List<BangumiStatus> byBangumiFlag;
 
 
     @Autowired
@@ -76,31 +76,43 @@ public class BotScheduled {
     }
 
 
-    @Scheduled(cron = "* * * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     @Async
     public void sendBangumiUpdateTime() {
         SimpleDateFormat hHmm = new SimpleDateFormat("HHmm");
         String hhmmString = hHmm.format(new Date());
         List<BangumiList> nowBGM = todayBGMForTime.getOrDefault(hhmmString, null);
 
-        if (CollectionUtil.isNotEmpty(nowBGM)){
+        if (CollectionUtil.isNotEmpty(nowBGM)) {
+            List<BangumiStatus> all = bangumiStatusService.getAll();
+            Map<Long, String> qqByExcludeBGM = all
+                    .stream()
+                    .collect(Collectors
+                            .toMap(BangumiStatus::getQq, a -> a.getBangumiExclude() == null ? "" :
+                                    a.getBangumiExclude()));
 
-            Msg result = Msg.builder();
             for (BangumiList bangumiList : nowBGM) {
+                Msg result = Msg.builder();
                 result.text("《").text(bangumiList.getTitleCN()).text("》").text("更新了！\n")
                         .text("放送地址：\n");
                 for (String url : bangumiList.getOnAirSite()) {
-                    result.text(url + "\n");
+                    result.text(url + "\n\n");
                 }
-                result.text("\n");
-            }
-            List<Long> qqGroupIds = byBangumiFlag
-                    .stream()
-                    .map(BangumiStatus::getQq)
-                    .collect(Collectors.toList());
+                String bgmId = bangumiList.getBgmId().toString();
+                result.text("如果你不喜欢这个番剧，可以输入/bgm rm " + bgmId + "\n");
 
-            for (Long qqGroupId : qqGroupIds) {
-                result.sendToFriend(botUtils.getFirstBot(),qqGroupId);
+                List<Long> qqs = byBangumiFlag
+                        .stream()
+                        .map(BangumiStatus::getQq)
+                        .collect(Collectors.toList());
+
+                for (Long qq : qqs) {
+                    String excludeBGMs = qqByExcludeBGM.get(qq);
+                    if (StringUtils.isNotEmpty(excludeBGMs) && excludeBGMs.contains(bgmId)) {
+                        return;
+                    }
+                    result.sendToFriend(botUtils.getFirstBot(), qq);
+                }
             }
         }
 
