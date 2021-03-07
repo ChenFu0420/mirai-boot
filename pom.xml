@@ -62,16 +62,9 @@
         <telegrambots.version>5.0.1</telegrambots.version>
         <webp.imageio.version>0.1.3</webp.imageio.version>
         <ansj_seg.version>5.1.6</ansj_seg.version>
-        <minecraft.rcon.version>0.0.3</minecraft.rcon.version>
-
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.MrGraversen</groupId>
-            <artifactId>minecraft-rcon</artifactId>
-            <version>${minecraft.rcon.version}</version>
-        </dependency>
 <!--        分词-->
         <dependency>
             <groupId>org.ansj</groupId>

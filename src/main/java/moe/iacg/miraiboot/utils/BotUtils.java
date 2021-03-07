@@ -2,6 +2,7 @@ package moe.iacg.miraiboot.utils;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.constants.MsgDataConstant;
@@ -34,6 +35,9 @@ public class BotUtils {
     @Autowired
     BotContainer botContainer;
 
+    @NacosValue("${bot.admin.qq}")
+    Long botAdminQQ;
+
     @Autowired
     RedisRaterLimiter redisRaterLimiter;
 
@@ -65,6 +69,11 @@ public class BotUtils {
         return secondContent;
     }
 
+    public boolean isBotAdmin(Long qq) {
+        return botAdminQQ.equals(qq);
+
+    }
+
 
     public <T> int sendMessage(Bot bot, T event, Msg msg) {
 
@@ -78,7 +87,7 @@ public class BotUtils {
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
                 msg.text("你发送的消息太快了！休息一下？快男？");
-            }else {
+            } else {
                 bot.sendPrivateMsg(eventPrivate.getUserId(), msg, false);
             }
         }
@@ -90,7 +99,7 @@ public class BotUtils {
             if (!hasAcq) {
                 msg.setMessageChain(new ArrayList<>());
                 msg.text("你发送的消息太快了！休息一下？快男？").at(userId);
-            }else {
+            } else {
                 bot.sendGroupMsg(eventGroup.getGroupId(),
                         msg, false);
             }
@@ -199,6 +208,7 @@ public class BotUtils {
         getFirstBot().sendGroupMsg(groupId, msg, false);
         return BotPlugin.MESSAGE_BLOCK;
     }
+
     public int sendPrivateMsg(Long qq, Msg msg) {
         getFirstBot().sendPrivateMsg(qq, msg, false);
         return BotPlugin.MESSAGE_BLOCK;

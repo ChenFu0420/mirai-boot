@@ -10,6 +10,7 @@ spring:
       - moe.iacg.miraiboot.plugins.Genshin #
       - moe.iacg.miraiboot.plugins.Reread #
       - moe.iacg.miraiboot.plugins.AddMe #
+      - moe.iacg.miraiboot.plugins.Rcon #
 
   #      - moe.iacg.miraiboot.plugins.Telegram #
   jpa:
