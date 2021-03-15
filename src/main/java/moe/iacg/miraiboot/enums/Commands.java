@@ -17,7 +17,7 @@ public enum Commands {
     ),
     HELP("help", "命令帮助"),
     DONATE("donate", "云要饭"),
-
+    TOMP3("tomp3", "聊天语音转mp3"),
     IOT("iot", "基于mqtt的物联网功能 （老王自家使用）"),
     SWITCH("iot", "基于mqtt的物联网功能 （老王自家使用）"),
 

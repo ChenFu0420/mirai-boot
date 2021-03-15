@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
+import moe.iacg.miraiboot.constants.MsgTypeConstant;
+import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.bot.BotPlugin;
 import onebot.OnebotEvent;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,6 +14,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 @Aspect
 @Component
@@ -48,15 +53,25 @@ public class CommandPrefixAspect {
         String prefixCommand = prefix + command;
         if (event instanceof OnebotEvent.PrivateMessageEvent) {
             //私聊消息
-            return judge(joinPoint, prefixCommand, alias, ((OnebotEvent.PrivateMessageEvent) event).getRawMessage());
+            List<String> texts = BotUtils.getMessageForType(((OnebotEvent.PrivateMessageEvent) event).getMessageList(),  MsgTypeConstant.TEXT);
+            if (!CollectionUtils.isEmpty(texts)) {
+                return judge(joinPoint, prefixCommand, alias, texts.get(0));
+            }else {
+                return judge(joinPoint, prefixCommand, alias, "");
+            }
         } else {
             //群消息处理
-            return judge(joinPoint, prefixCommand, alias, ((OnebotEvent.GroupMessageEvent) event).getRawMessage());
+            List<String> texts = BotUtils.getMessageForType(((OnebotEvent.GroupMessageEvent) event).getMessageList(), MsgTypeConstant.TEXT);
+            if (!CollectionUtils.isEmpty(texts)) {
+                return judge(joinPoint, prefixCommand, alias, texts.get(0));
+            }else {
+                return judge(joinPoint, prefixCommand, alias, "");
+            }
         }
     }
 
     @SneakyThrows
     private Object judge(ProceedingJoinPoint joinPoint, String command, String[] alias, String rawMessage) {
-        return rawMessage.startsWith(command) || StrUtil.containsAny(rawMessage,alias)  ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
+        return rawMessage.startsWith(command) || StrUtil.containsAny(rawMessage, alias) ? joinPoint.proceed() : BotPlugin.MESSAGE_IGNORE;
     }
 }

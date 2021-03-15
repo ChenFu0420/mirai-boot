@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @CommandPrefix(command = Commands.RCON)
-
 public class Rcon extends BotPlugin {
 
     @Autowired

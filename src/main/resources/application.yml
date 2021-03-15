@@ -2,6 +2,7 @@ spring:
   bot:
     plugin-list: # 配置插件列表（有序），如果插件返回0，继续执行剩余插件，如果插件返回1，终止剩余插件执行
       - moe.iacg.miraiboot.plugins.Help #
+      - moe.iacg.miraiboot.plugins.Log #
       - moe.iacg.miraiboot.plugins.SeTu #
       - moe.iacg.miraiboot.plugins.StartServer #
       - moe.iacg.miraiboot.plugins.Watch #
@@ -9,6 +10,7 @@ spring:
       - moe.iacg.miraiboot.plugins.Bangumi #
       - moe.iacg.miraiboot.plugins.Genshin #
       - moe.iacg.miraiboot.plugins.Reread #
+      - moe.iacg.miraiboot.plugins.RecordToMp3 #
       - moe.iacg.miraiboot.plugins.AddMe #
       - moe.iacg.miraiboot.plugins.Rcon #
 

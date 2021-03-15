@@ -9,5 +9,6 @@ public class MsgDataConstant {
     public static final String TEXT = "text";
     public static final String ID = "id";
     public static final String ALL = "all";
+    public static final String REPLY_SEQ = "reply_seq";
 
 }

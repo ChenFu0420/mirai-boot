@@ -180,9 +180,17 @@ public class BotUtils {
                     .map(message -> message.getDataOrThrow(MsgDataConstant.ID))
                     .collect(Collectors.toList());
         }
-        //回复消息的内容
+        //语音链接
+        if (MsgTypeConstant.RECORD.equals(type)) {
+            return messageStream
+                    .map(message -> message.getDataOrThrow(MsgDataConstant.URL))
+                    .collect(Collectors.toList());
+        }
+        //回复消息的消息id
         if (MsgTypeConstant.REPLY.equals(type)) {
-            return getMessageForType(messageList, MsgDataConstant.TEXT);
+            return messageStream
+                    .map(message -> message.getDataOrThrow(MsgDataConstant.REPLY_SEQ))
+                    .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

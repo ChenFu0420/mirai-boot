@@ -6,4 +6,5 @@ public class MsgTypeConstant {
     public static final String TEXT = "text";
     public static final String FACE = "face";
     public static final String REPLY = "reply";
+    public static final String RECORD = "record";
 }
