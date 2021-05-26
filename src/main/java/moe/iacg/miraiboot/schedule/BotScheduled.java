@@ -6,9 +6,9 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
-import moe.iacg.miraiboot.entity.BangumiStatus;
+import moe.iacg.miraiboot.entity.UserStatus;
 import moe.iacg.miraiboot.model.BangumiList;
-import moe.iacg.miraiboot.service.BangumiStatusService;
+import moe.iacg.miraiboot.service.UserStatusService;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.utils.Msg;
 import org.apache.commons.lang3.StringUtils;
@@ -29,11 +29,11 @@ public class BotScheduled {
     private static String lastQuarterBangumi;
 
     private static Map<String, List<BangumiList>> todayBGMForTime;
-    private static List<BangumiStatus> byBangumiFlag;
+    private static List<UserStatus> byBangumiFlag;
 
 
     @Autowired
-    private BangumiStatusService bangumiStatusService;
+    private UserStatusService userStatusService;
 
     @Autowired
     private BotUtils botUtils;
@@ -72,7 +72,7 @@ public class BotScheduled {
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
         List<BangumiList> todayBGM = tmpBGMList.get(String.valueOf(dayOfWeek - 1));
         todayBGMForTime = todayBGM.stream().collect(Collectors.groupingBy(BangumiList::getTimeCN));
-        byBangumiFlag = bangumiStatusService.findByBangumiFlag();
+        byBangumiFlag = userStatusService.findByBangumiFlag();
     }
 
 
@@ -84,11 +84,11 @@ public class BotScheduled {
         List<BangumiList> nowBGM = todayBGMForTime.getOrDefault(hhmmString, null);
 
         if (CollectionUtil.isNotEmpty(nowBGM)) {
-            List<BangumiStatus> all = bangumiStatusService.getAll();
+            List<UserStatus> all = userStatusService.getAll();
             Map<Long, String> qqByExcludeBGM = all
                     .stream()
                     .collect(Collectors
-                            .toMap(BangumiStatus::getQq, a -> a.getBangumiExclude() == null ? "" :
+                            .toMap(UserStatus::getQq, a -> a.getBangumiExclude() == null ? "" :
                                     a.getBangumiExclude()));
 
             for (BangumiList bangumiList : nowBGM) {
@@ -103,7 +103,7 @@ public class BotScheduled {
 
                 List<Long> qqs = byBangumiFlag
                         .stream()
-                        .map(BangumiStatus::getQq)
+                        .map(UserStatus::getQq)
                         .collect(Collectors.toList());
 
                 for (Long qq : qqs) {

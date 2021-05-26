@@ -19,17 +19,18 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "bangumi_status")
-@TableName("bangumi_status")
+@Table(name = "user_status")
+@TableName("user_status")
 @ApiModel(value = "用户番组数据")
 //@MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
-public class BangumiStatus {
+public class UserStatus {
 
 //    @EmbeddedId
     @Id
     private Long qq;
     private Integer bangumiFlag;
     private String bangumiExclude;
+    private String hpoolCookie;
 }

@@ -3,9 +3,9 @@ package moe.iacg.miraiboot.plugins;
 import cn.hutool.core.text.StrSpliter;
 import lombok.extern.slf4j.Slf4j;
 import moe.iacg.miraiboot.annotation.CommandPrefix;
-import moe.iacg.miraiboot.entity.BangumiStatus;
+import moe.iacg.miraiboot.entity.UserStatus;
 import moe.iacg.miraiboot.enums.Commands;
-import moe.iacg.miraiboot.service.BangumiStatusService;
+import moe.iacg.miraiboot.service.UserStatusService;
 import moe.iacg.miraiboot.utils.BotUtils;
 import net.lz1998.pbbot.bot.Bot;
 import net.lz1998.pbbot.bot.BotPlugin;
@@ -24,7 +24,7 @@ import java.util.List;
 public class Bangumi extends BotPlugin {
 
     @Autowired
-    BangumiStatusService bangumiStatusService;
+    UserStatusService userStatusService;
 
     @Autowired
     BotUtils botUtils;
@@ -34,26 +34,26 @@ public class Bangumi extends BotPlugin {
 
         Msg messageBuilder = new Msg();
         long qq = event.getUserId();
-        BangumiStatus bangumiStatus = bangumiStatusService.get(qq);
+        UserStatus UserStatus = userStatusService.get(qq);
         String acceptMessage = BotUtils.removeCommandPrefix(Commands.BGM.getCommand(), event.getRawMessage());
 
         if (StringUtils.isEmpty(acceptMessage)) {
-            if (bangumiStatus == null) {
-                bangumiStatus = new BangumiStatus();
-                bangumiStatus.setQq(qq).setBangumiFlag(1);
-                bangumiStatusService.save(bangumiStatus);
+            if (UserStatus == null) {
+                UserStatus = new UserStatus();
+                UserStatus.setQq(qq).setBangumiFlag(1);
+                userStatusService.save(UserStatus);
 
                 messageBuilder.text("你已经成功订阅新番更新提醒");
                 return botUtils.sendMessage(bot, event, messageBuilder);
             }
-            if (bangumiStatus.getBangumiFlag() == 1) {
+            if (UserStatus.getBangumiFlag() == 1) {
 
-                bangumiStatus.setQq(qq).setBangumiFlag(0);
-                bangumiStatusService.update(bangumiStatus);
+                UserStatus.setQq(qq).setBangumiFlag(0);
+                userStatusService.update(UserStatus);
                 messageBuilder.text("你已经取消订阅新番更新提醒");
             } else {
-                bangumiStatus.setQq(qq).setBangumiFlag(1);
-                bangumiStatusService.update(bangumiStatus);
+                UserStatus.setQq(qq).setBangumiFlag(1);
+                userStatusService.update(UserStatus);
                 messageBuilder.text("再次订阅了新番更新提醒");
             }
             return botUtils.sendMessage(bot, event, messageBuilder);
@@ -67,13 +67,13 @@ public class Bangumi extends BotPlugin {
                 excludeBGMIds.append(bgmIds.get(i)).append(",");
             }
 
-            String bangumiExclude = bangumiStatus.getBangumiExclude();
+            String bangumiExclude = UserStatus.getBangumiExclude();
             if (StringUtils.isEmpty(bangumiExclude)) {
-                bangumiStatus.setBangumiExclude(excludeBGMIds.toString());
-                bangumiStatusService.update(bangumiStatus);
+                UserStatus.setBangumiExclude(excludeBGMIds.toString());
+                userStatusService.update(UserStatus);
             } else {
-                bangumiStatus.setBangumiExclude(bangumiExclude + excludeBGMIds.toString());
-                bangumiStatusService.update(bangumiStatus);
+                UserStatus.setBangumiExclude(bangumiExclude + excludeBGMIds.toString());
+                userStatusService.update(UserStatus);
             }
             messageBuilder.text("已经移除番号：" + excludeBGMIds.toString() + "订阅。");
             return botUtils.sendMessage(bot, event, messageBuilder);

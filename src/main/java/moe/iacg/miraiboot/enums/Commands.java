@@ -43,7 +43,7 @@ public enum Commands {
 
     RCON("rcon", "Minecraft服务端RCON命令（管理员权限）"),
 
-    POOL("pool", "矿池相关命令"),
+    HPOOL("hpool", "矿池相关命令"),
 
     //        STATISTIC("statistic", "获取玩家在线统计数据"),
     BIND("bind", "QQ绑定Minecraft账号。私聊我，如：/bind yjx4 password"),

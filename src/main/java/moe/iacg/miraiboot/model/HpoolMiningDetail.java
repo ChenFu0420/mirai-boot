@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @Data
@@ -15,14 +17,16 @@ public class HpoolMiningDetail implements Serializable {
 
     @NoArgsConstructor
     @lombok.Data
-    public static class Data implements Serializable {
+    public static   class  Data  implements Serializable {
         private Integer page;
         private Integer total;
-        private java.util.List<List> list;
+        private List<Settlement> list;
+
+//        private java.util.List<MiningInComeRecord> miningInComeRecord;
 
         @NoArgsConstructor
         @lombok.Data
-        public static class List implements Serializable {
+        public static class Settlement implements Serializable {
             private BigDecimal block_reward;
             private String coin;
             private String height;
@@ -33,6 +37,20 @@ public class HpoolMiningDetail implements Serializable {
             private Integer status;
             private String status_str;
             private String type;
+        }
+//        {
+//            "amount": "0.01142881",
+//                "coin": "chia",
+//                "name": "CHIA",
+//                "record_time": 1621827000,
+//                "type": "chia"
+//        }
+
+        @NoArgsConstructor
+        @lombok.Data
+        public static class MiningInComeRecord implements Serializable {
+            private String amount;
+            private Date record_time;
         }
 
 
